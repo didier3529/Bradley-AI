@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Repository analysis context
+alwaysApply: true
+---
+
+Reference the comprehensive repository analysis when discussing the project architecture.
+
+
+[COMPREHENSIVE_REPOSITORY_ANALYSIS.md](mdc:COMPREHENSIVE_REPOSITORY_ANALYSIS.md)

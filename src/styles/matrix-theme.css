@@ -1,0 +1,280 @@
+/* Matrix Theme CSS - June 2025 */
+/* PHASE-0: Matrix Digital Rain Foundation */
+
+:root {
+  /* Matrix Color Variables */
+  --matrix-cyber-blue: #00d4ff;
+  --matrix-green: #00ff41;
+  --matrix-black: #000000;
+  
+  /* Matrix Green Variants */
+  --matrix-green-light: #39ff74;
+  --matrix-green-dark: #00cc33;
+  --matrix-green-glow: rgba(0, 255, 65, 0.8);
+  
+  /* Cyber Blue Variants */
+  --matrix-blue-light: #33ddff;
+  --matrix-blue-dark: #0099cc;
+  --matrix-blue-glow: rgba(0, 212, 255, 0.8);
+  
+  /* Background Variants */
+  --matrix-bg-black: #0a0a0a;
+  --matrix-bg-dark: #1a1a1a;
+  --matrix-bg-medium: #2a2a2a;
+  
+  /* Special Effects */
+  --matrix-overlay: rgba(0, 0, 0, 0.8);
+  --matrix-glass: rgba(0, 212, 255, 0.1);
+  --matrix-rain-alpha: rgba(0, 255, 65, 0.7);
+}
+
+/* Matrix Keyframe Animations */
+@keyframes matrix-rain-fall {
+  0% {
+    transform: translateY(-100vh);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes matrix-glow-pulse {
+  0%, 100% {
+    text-shadow: 0 0 5px var(--matrix-green-glow);
+    opacity: 0.8;
+  }
+  50% {
+    text-shadow: 0 0 20px var(--matrix-green-glow), 0 0 30px var(--matrix-green-glow);
+    opacity: 1;
+  }
+}
+
+@keyframes cyber-glow-pulse {
+  0%, 100% {
+    text-shadow: 0 0 5px var(--matrix-blue-glow);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px var(--matrix-blue-glow), 0 0 30px var(--matrix-blue-glow);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 0 40px rgba(0, 212, 255, 0.3);
+  }
+}
+
+@keyframes matrix-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+  75% { opacity: 0.9; }
+}
+
+@keyframes matrix-typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* Matrix Text Classes */
+.matrix-text {
+  color: var(--matrix-green);
+  font-family: "Fira Code", "Consolas", "Monaco", monospace;
+}
+
+.matrix-text-glow {
+  color: var(--matrix-green);
+  font-family: "Fira Code", "Consolas", "Monaco", monospace;
+  animation: matrix-glow-pulse 2s ease-in-out infinite;
+}
+
+.matrix-text-cyber {
+  color: var(--matrix-cyber-blue);
+  font-family: "Fira Code", "Consolas", "Monaco", monospace;
+}
+
+.matrix-text-cyber-glow {
+  color: var(--matrix-cyber-blue);
+  font-family: "Fira Code", "Consolas", "Monaco", monospace;
+  animation: cyber-glow-pulse 2s ease-in-out infinite;
+}
+
+.matrix-text-flicker {
+  color: var(--matrix-green);
+  font-family: "Fira Code", "Consolas", "Monaco", monospace;
+  animation: matrix-flicker 3s ease-in-out infinite;
+}
+
+/* Matrix Component Classes */
+.matrix-button {
+  font-family: "Fira Code", "Consolas", "Monaco", monospace;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.matrix-button:hover {
+  transform: translateY(-1px);
+}
+
+.matrix-card {
+  border-radius: 4px;
+  background: var(--matrix-bg-dark);
+  border: 1px solid var(--matrix-green-dark);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.matrix-card:hover {
+  border-color: var(--matrix-green);
+  box-shadow: 0 0 20px var(--matrix-green-glow);
+}
+
+/* Matrix Rain Container */
+.matrix-rain-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* GPU Acceleration */
+.matrix-gpu-accelerated {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Matrix Grid Pattern */
+.matrix-grid {
+  background-image: 
+    linear-gradient(var(--matrix-green-glow) 1px, transparent 1px),
+    linear-gradient(90deg, var(--matrix-green-glow) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.1;
+}
+
+/* Matrix Shadows and Glows */
+.matrix-shadow-glow {
+  box-shadow: 0 0 20px var(--matrix-green-glow);
+}
+
+.matrix-shadow-cyber {
+  box-shadow: 0 0 20px var(--matrix-blue-glow);
+}
+
+.matrix-text-shadow-glow {
+  text-shadow: 0 0 10px var(--matrix-green);
+}
+
+.matrix-text-shadow-cyber {
+  text-shadow: 0 0 10px var(--matrix-cyber-blue);
+}
+
+/* Responsive Matrix Effects */
+@media (max-width: 768px) {
+  .matrix-text-glow,
+  .matrix-text-cyber-glow {
+    animation-duration: 3s; /* Slower on mobile for battery */
+  }
+  
+  .matrix-rain-container {
+    opacity: 0.7; /* Reduce intensity on mobile */
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .matrix-text-glow,
+  .matrix-text-cyber-glow,
+  .matrix-text-flicker {
+    animation: none;
+  }
+  
+  .matrix-button,
+  .matrix-card {
+    transition: none;
+  }
+  
+  .matrix-rain-container {
+    display: none;
+  }
+}
+
+/* High Contrast Support */
+@media (prefers-contrast: high) {
+  .matrix-text {
+    color: #ffffff;
+  }
+  
+  .matrix-text-cyber {
+    color: #ffffff;
+  }
+  
+  .matrix-card {
+    border-color: #ffffff;
+    background: #000000;
+  }
+}
+
+/* Dark Theme Enhancements */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --matrix-bg-black: #000000;
+    --matrix-bg-dark: #0a0a0a;
+    --matrix-bg-medium: #1a1a1a;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .matrix-rain-container,
+  .matrix-text-glow,
+  .matrix-text-cyber-glow,
+  .matrix-text-flicker {
+    display: none !important;
+  }
+  
+  .matrix-text,
+  .matrix-text-cyber {
+    color: #000000 !important;
+    text-shadow: none !important;
+  }
+}
+
+/* Matrix Connection Status Glow Classes */
+.matrix-glow-green {
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.4), 0 0 20px rgba(0, 255, 65, 0.2);
+  border-color: rgba(0, 255, 65, 0.5) !important;
+}
+
+.matrix-glow-blue {
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.4), 0 0 20px rgba(0, 212, 255, 0.2);
+  border-color: rgba(0, 212, 255, 0.5) !important;
+}
+
+.matrix-glow-red {
+  box-shadow: 0 0 10px rgba(255, 0, 128, 0.4), 0 0 20px rgba(255, 0, 128, 0.2);
+  border-color: rgba(255, 0, 128, 0.5) !important;
+  animation: matrix-glitch 0.3s ease-in-out infinite alternate;
+}
+
+.matrix-glow-amber {
+  box-shadow: 0 0 10px rgba(255, 170, 0, 0.4), 0 0 20px rgba(255, 170, 0, 0.2);
+  border-color: rgba(255, 170, 0, 0.5) !important;
+}
+
+/* Matrix Glitch Effect for Error States */
+@keyframes matrix-glitch {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-2px); }
+  40% { transform: translateX(2px); }
+  60% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+  100% { transform: translateX(0); }
+}
+
+.matrix-glitch {
+  animation: matrix-glitch 0.3s ease-in-out infinite alternate;
+} 

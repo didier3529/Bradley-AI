@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 // Import new v0-specific components that use the existing backend
 import DirectPriceDisplay from '@/components/direct-price-display'
+import { EnhancedBradleyAILoader } from '@/components/enhanced-loading/EnhancedBradleyAILoader'
 import { BradleyAIHeader } from './bradley-ai-header'
 import { BradleyAIStatsCards } from './bradley-ai-stats-cards'
 import { MatrixBackground } from './matrix-background'
@@ -143,17 +144,19 @@ export function BradleyAIDashboard() {
             <MatrixBackground />
 
             {/* Enhanced Loading Experience */}
-            <EnhancedBradleyAILoader
-                isVisible={isLoading}
-                onComplete={() => {
-                    setIsLoading(false)
-                    setIsReady(true)
-                }}
-                enableAudio={false} // Disabled by default for better UX
-                enableParticles={true}
-                enableDigitalRain={true}
-                performanceMode="auto"
-            />
+            {isLoading && (
+                <EnhancedBradleyAILoader
+                    isVisible={isLoading}
+                    onComplete={() => {
+                        setIsLoading(false)
+                        setIsReady(true)
+                    }}
+                    enableAudio={false} // Disabled by default for better UX
+                    enableParticles={true}
+                    enableDigitalRain={true}
+                    performanceMode="auto"
+                />
+            )}
 
             {/* Main Dashboard Content */}
             <motion.div

@@ -11,6 +11,17 @@ import { useEffect, useState } from 'react'
 import { LoadingPhase } from '../managers/LoadingPhaseManager'
 import { ColorScheme } from '../themes/LoadingThemes'
 
+// Hydration-safe hook following established patterns from codebase
+function useHydration() {
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  return isHydrated
+}
+
 export interface StatusMessagesProps {
   phase: LoadingPhase
   progress: number
@@ -33,6 +44,8 @@ export function StatusMessages({
   const [currentMessage, setCurrentMessage] = useState<StatusMessage>({ primary: '' })
   const [typewriterText, setTypewriterText] = useState('')
   const [showDetails, setShowDetails] = useState(false)
+  const [windowWidth, setWindowWidth] = useState(1200) // Default fallback width
+  const isHydrated = useHydration()
 
   // Get messages for current phase
   const getPhaseMessages = (): StatusMessage => {
@@ -100,6 +113,22 @@ export function StatusMessages({
         }
     }
   }
+
+  // Hydration-safe window width detection
+  useEffect(() => {
+    if (!isHydrated) return
+
+    const updateWindowWidth = () => {
+      setWindowWidth(window.innerWidth)
+    }
+
+    // Set initial width
+    updateWindowWidth()
+
+    // Listen for resize events
+    window.addEventListener('resize', updateWindowWidth)
+    return () => window.removeEventListener('resize', updateWindowWidth)
+  }, [isHydrated])
 
   // Update message when phase changes
   useEffect(() => {
@@ -300,13 +329,13 @@ export function StatusMessages({
         />
 
         {/* Data particles */}
-        {[...Array(5)].map((_, i) => (
+        {isHydrated && [...Array(5)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute bottom-0 w-0.5 h-0.5 rounded-full"
             style={{ backgroundColor: theme.accent.secondary }}
             animate={{
-              x: [-20, window.innerWidth + 20],
+              x: [-20, windowWidth + 20],
               opacity: [0, 1, 0]
             }}
             transition={{

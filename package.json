@@ -8,7 +8,7 @@
     "dev:clean": "node clean-and-restart.js",
     "clean": "rimraf .next node_modules/.cache",
     "build": "next build",
-    "build:clean": "node build.js",
+    "build:clean": "npm run clean && npm run build",
     "start": "next start",
     "lint": "next lint",
     "restart": "npm run clean && npm run dev",

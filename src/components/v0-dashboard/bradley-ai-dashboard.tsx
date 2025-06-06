@@ -122,16 +122,18 @@ export function BradleyAIDashboard() {
     const [isLoading, setIsLoading] = useState(true)
     const [isReady, setIsReady] = useState(false)
 
-    // Simplified loading with fast completion
+    // Enhanced loading experience duration
     useEffect(() => {
-        // Quick loading - just enough time for smooth transitions
-        const loadingTimer = setTimeout(() => {
+        // Let the enhanced loader complete its full experience (approximately 8-12 seconds)
+        // The loader will call onComplete when it's finished
+        const fallbackTimer = setTimeout(() => {
+            // Fallback in case the loader doesn't call onComplete
             setIsLoading(false)
             setIsReady(true)
-        }, 500) // Reduced from 1500ms to 500ms
+        }, 15000) // 15 second fallback
 
         return () => {
-            clearTimeout(loadingTimer)
+            clearTimeout(fallbackTimer)
         }
     }, [])
 
@@ -140,27 +142,18 @@ export function BradleyAIDashboard() {
             {/* Matrix Background */}
             <MatrixBackground />
 
-            {/* Simplified Loading overlay */}
-            {isLoading && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-black/80 flex items-center justify-center z-50"
-                >
-                    <div className="flex flex-col items-center">
-                        <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-                            className="w-16 h-16 border-4 border-t-cyan-500 border-r-transparent border-b-transparent border-l-transparent rounded-full"
-                        />
-
-                        <div className="mt-4 text-cyan-500 font-mono text-sm tracking-wider">
-                            BRADLEY AI
-                        </div>
-                    </div>
-                </motion.div>
-            )}
+            {/* Enhanced Loading Experience */}
+            <EnhancedBradleyAILoader
+                isVisible={isLoading}
+                onComplete={() => {
+                    setIsLoading(false)
+                    setIsReady(true)
+                }}
+                enableAudio={false} // Disabled by default for better UX
+                enableParticles={true}
+                enableDigitalRain={true}
+                performanceMode="auto"
+            />
 
             {/* Main Dashboard Content */}
             <motion.div

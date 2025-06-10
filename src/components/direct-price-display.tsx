@@ -4,7 +4,7 @@ import { HydrationSafe, useHydration } from '@/components/ui/hydration-safe';
 import { PriceFetcher } from '@/lib/services/price-fetcher';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { RefreshCw } from 'lucide-react';
+import { TrendingUp, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 // The symbols we want to display
@@ -36,17 +36,17 @@ function MarketCryptoIcon({ symbol, className }: { symbol: string; className?: s
   // Fallback for symbols that don't have logos
   if (!logoPath || imageError) {
     const fallbackColors: Record<string, string> = {
-      'BTC': 'bg-orange-500',
-      'ETH': 'bg-blue-500',
-      'SOL': 'bg-purple-500',
-      'ADA': 'bg-blue-400',
-      'DOT': 'bg-pink-500',
+      'BTC': 'bg-gradient-to-br from-orange-400 to-orange-600',
+      'ETH': 'bg-gradient-to-br from-blue-400 to-blue-600',
+      'SOL': 'bg-gradient-to-br from-purple-400 to-purple-600',
+      'ADA': 'bg-gradient-to-br from-blue-300 to-blue-500',
+      'DOT': 'bg-gradient-to-br from-pink-400 to-pink-600',
     };
 
     return (
       <div className={cn(
-        "w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold",
-        fallbackColors[symbol] || 'bg-gray-500',
+        "w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-[0_0_12px_rgba(34,211,238,0.3)]",
+        fallbackColors[symbol] || 'bg-gradient-to-br from-gray-400 to-gray-600',
         className
       )}>
         {symbol.charAt(0)}
@@ -58,7 +58,7 @@ function MarketCryptoIcon({ symbol, className }: { symbol: string; className?: s
     <img
       src={logoPath}
       alt={symbol}
-      className={cn("w-8 h-8 rounded-full object-cover", className)}
+      className={cn("w-8 h-8 rounded-full object-cover shadow-[0_0_8px_rgba(34,211,238,0.4)]", className)}
       onError={() => setImageError(true)}
       loading="eager"
     />
@@ -226,53 +226,72 @@ function PriceDisplayContent() {
     }
   };
 
+  const getSentimentColor = (sentiment: string) => {
+    if (sentiment === 'Very Bullish') return 'from-emerald-400 via-green-400 to-lime-300'
+    if (sentiment === 'Bullish') return 'from-green-400 via-emerald-400 to-teal-300'
+    if (sentiment === 'Bearish') return 'from-orange-400 via-yellow-400 to-amber-300'
+    if (sentiment === 'Very Bearish') return 'from-red-400 via-pink-400 to-rose-300'
+    return 'from-gray-400 via-slate-400 to-zinc-300'
+  }
+
+  const getSentimentGlow = (sentiment: string) => {
+    if (sentiment === 'Very Bullish') return 'shadow-[0_0_15px_rgba(34,197,94,0.6)]'
+    if (sentiment === 'Bullish') return 'shadow-[0_0_12px_rgba(34,197,94,0.4)]'
+    if (sentiment === 'Bearish') return 'shadow-[0_0_12px_rgba(251,146,60,0.4)]'
+    if (sentiment === 'Very Bearish') return 'shadow-[0_0_15px_rgba(239,68,68,0.4)]'
+    return 'shadow-[0_0_8px_rgba(148,163,184,0.3)]'
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 rounded-lg overflow-hidden"
+      className="relative overflow-hidden rounded-lg border border-cyan-500/30 bg-gradient-to-br from-black/90 via-slate-900/80 to-black/90 shadow-2xl shadow-cyan-500/20 backdrop-blur-md"
     >
+      {/* Animated Background Pattern */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/5 to-transparent animate-pulse"></div>
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"></div>
+      </div>
+
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-slate-700/30">
+      <div className="relative flex items-center justify-between p-6 border-b border-cyan-500/20 bg-gradient-to-r from-black/50 via-slate-900/30 to-black/50">
         <div className="flex items-center space-x-3">
-          <img
-            src={`/images/section-logos/market-intelligence.png${cacheBustParam}`}
-            alt="Market Intelligence"
-            className="h-8 w-8 object-contain"
-            onError={(e) => {
-              // Fallback to bradley logo if section logo fails to load
-              const target = e.currentTarget as HTMLImageElement;
-              if (target.src.includes('market-intelligence.png')) {
-                target.src = '/bradley-logo.png';
-                target.className = 'h-8 w-8 rounded-full object-cover';
-              }
-            }}
-          />
-          <h2 className="text-lg font-mono font-bold text-white uppercase tracking-wide">
+          <div className="relative">
+            <img
+              src={`/images/section-logos/market-intelligence.png${cacheBustParam}`}
+              alt="Market Intelligence"
+              className="h-8 w-8 object-contain drop-shadow-lg shadow-cyan-400/50"
+              onError={(e) => {
+                // Fallback to original icon if image fails to load
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            <TrendingUp className="h-8 w-8 text-cyan-400 hidden drop-shadow-lg shadow-cyan-400/50" />
+            <div className="absolute inset-0 bg-cyan-400/20 rounded-full blur-sm animate-pulse"></div>
+          </div>
+          <h2 className="bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-300 bg-clip-text text-lg font-mono font-bold text-transparent uppercase tracking-wide drop-shadow-lg">
             MARKET INTELLIGENCE
           </h2>
         </div>
+
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-xs font-mono text-green-400 uppercase">LIVE</span>
+            <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/50"></div>
+            <span className="text-xs font-mono text-yellow-400 uppercase tracking-wider drop-shadow-sm">LOADING</span>
           </div>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={refetch}
-            className="flex items-center space-x-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded text-xs font-mono text-cyan-400 hover:bg-cyan-500/20 transition-colors"
-            disabled={loading}
-          >
-            <RefreshCw className={cn("h-3 w-3", loading && "animate-spin")} />
-          </motion.button>
         </div>
       </div>
 
       {/* Table Header */}
-      <div className="grid grid-cols-6 gap-4 px-6 py-4 bg-slate-900/50 text-xs font-mono text-gray-400 uppercase tracking-wider border-b border-slate-700/30">
-        <div>ASSET</div>
+      <div className="grid grid-cols-6 gap-4 px-6 py-4 bg-gradient-to-r from-slate-900/80 via-slate-800/60 to-slate-900/80 text-xs font-mono text-cyan-300 uppercase tracking-wider border-b border-cyan-500/20 backdrop-blur-sm">
+        <div className="flex items-center space-x-1">
+          <span>ASSET</span>
+          <TrendingUp className="h-3 w-3 text-emerald-400" />
+        </div>
         <div>PRICE_USD</div>
         <div>DELTA_24H</div>
         <div>VOLUME</div>
@@ -281,14 +300,17 @@ function PriceDisplayContent() {
       </div>
 
       {/* Table Rows */}
-      <div className="divide-y divide-slate-700/30">
+      <div className="divide-y divide-cyan-500/10 relative z-10">
         {loading ? (
           <div className="px-6 py-8 text-center">
-            <div className="text-sm font-mono text-gray-400">Loading market data...</div>
+            <div className="text-sm font-mono text-cyan-300 drop-shadow-[0_0_4px_rgba(34,211,238,0.5)]">Loading market data...</div>
+            <div className="flex justify-center mt-4">
+              <div className="w-6 h-6 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin shadow-[0_0_8px_rgba(34,211,238,0.4)]" />
+            </div>
           </div>
         ) : error ? (
           <div className="px-6 py-8 text-center">
-            <div className="text-sm font-mono text-red-400">
+            <div className="text-sm font-mono text-red-400 drop-shadow-[0_0_4px_rgba(239,68,68,0.5)]">
               Error: {error}
             </div>
             <div className="text-xs font-mono text-gray-400 mt-2">
@@ -306,61 +328,82 @@ function PriceDisplayContent() {
             return (
               <motion.div
                 key={symbol}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.3 }}
-                className="grid grid-cols-6 gap-4 px-6 py-4 hover:bg-slate-700/20 transition-colors"
+                initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                transition={{ delay: index * 0.08, duration: 0.4, type: "spring", stiffness: 100 }}
+                className="relative group"
               >
-                {/* Asset */}
-                <div className="flex items-center space-x-3">
-                  <MarketCryptoIcon symbol={symbol} className="w-8 h-8" />
-                  <div>
-                    <div className="text-sm font-mono font-semibold text-white">
-                      {symbol}
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-emerald-500/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                <div className="relative bg-slate-900/40 backdrop-blur-sm border-l-2 border-l-transparent hover:border-l-cyan-400/50 transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.1)]">
+                  <div className="grid grid-cols-6 gap-4 px-6 py-4">
+                    {/* Asset */}
+                    <div className="flex items-center space-x-3">
+                      <MarketCryptoIcon symbol={symbol} className="w-8 h-8" />
+                      <div>
+                        <div className="text-sm font-mono font-bold text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.3)]">
+                          {symbol}
+                        </div>
+                        <div className="text-xs font-mono text-cyan-200/60">
+                          {SYMBOL_NAMES[symbol]}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-xs font-mono text-gray-400">
-                      {SYMBOL_NAMES[symbol]}
+
+                    {/* Price */}
+                    <div className="flex items-center">
+                      <span className="text-sm font-mono font-bold text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.3)]">
+                        {formatPrice(data.price)}
+                      </span>
+                    </div>
+
+                    {/* Delta 24H */}
+                    <div className="flex items-center">
+                      <span className={cn(
+                        "text-sm font-mono font-semibold flex items-center space-x-1 px-2 py-1 rounded-lg border shadow-lg",
+                        isPositive
+                          ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/30 shadow-emerald-500/20"
+                          : "text-red-400 bg-red-500/10 border-red-500/30 shadow-red-500/20"
+                      )}>
+                        <TrendingUp className={cn("h-3 w-3", !isPositive && "rotate-180")} />
+                        <span>{isPositive ? "+" : ""}{changePercent.toFixed(2)}%</span>
+                      </span>
+                    </div>
+
+                    {/* Volume */}
+                    <div className="flex items-center">
+                      <span className="text-sm font-mono text-white drop-shadow-sm">
+                        {formatLargeNumber(data.volume)}
+                      </span>
+                    </div>
+
+                    {/* Market Cap */}
+                    <div className="flex items-center">
+                      <span className="text-sm font-mono text-white drop-shadow-sm">
+                        {formatLargeNumber(data.marketCap)}
+                      </span>
+                    </div>
+
+                    {/* Status */}
+                    <div className="flex items-center">
+                      <motion.span
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: index * 0.1 + 0.3, duration: 0.3 }}
+                        className={cn(
+                          "px-3 py-1 rounded-full text-xs font-mono font-bold border",
+                          `bg-gradient-to-r ${getSentimentColor(data.sentiment)} ${getSentimentGlow(data.sentiment)}`,
+                          data.sentiment === 'Very Bullish' || data.sentiment === 'Bullish'
+                            ? "border-green-400/40 text-black"
+                            : data.sentiment === 'Bearish' || data.sentiment === 'Very Bearish'
+                            ? "border-red-400/40 text-black"
+                            : "border-gray-400/40 text-black"
+                        )}
+                      >
+                        {data.sentiment.replace(' ', '').toUpperCase()}
+                      </motion.span>
                     </div>
                   </div>
-                </div>
-
-                {/* Price */}
-                <div className="text-sm font-mono text-white">
-                  {formatPrice(data.price)}
-                </div>
-
-                {/* Delta 24H */}
-                <div className="flex items-center">
-                  <span className={cn(
-                    "text-sm font-mono font-semibold flex items-center",
-                    isPositive ? "text-green-400" : "text-red-400"
-                  )}>
-                    {isPositive ? "↑" : "↓"} {isPositive ? "+" : ""}{changePercent.toFixed(2)}%
-                  </span>
-                </div>
-
-                {/* Volume */}
-                <div className="text-sm font-mono text-gray-300">
-                  {formatLargeNumber(data.volume)}
-                </div>
-
-                {/* Market Cap */}
-                <div className="text-sm font-mono text-gray-300">
-                  {formatLargeNumber(data.marketCap)}
-                </div>
-
-                {/* Status */}
-                <div className="text-sm font-mono">
-                  <span className={cn(
-                    "px-2 py-1 rounded text-xs font-mono font-semibold",
-                    data.sentiment === 'Very Bullish' ? "bg-green-500/20 text-green-400 border border-green-500/40" :
-                    data.sentiment === 'Bullish' ? "bg-green-400/20 text-green-400 border border-green-400/40" :
-                    data.sentiment === 'Bearish' ? "bg-red-400/20 text-red-400 border border-red-400/40" :
-                    data.sentiment === 'Very Bearish' ? "bg-red-500/20 text-red-500 border border-red-500/40" :
-                    "bg-gray-500/20 text-gray-400 border border-gray-500/40"
-                  )}>
-                    {data.sentiment.replace(' ', '').toUpperCase()}
-                  </span>
                 </div>
               </motion.div>
             );
@@ -369,10 +412,16 @@ function PriceDisplayContent() {
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-4 bg-slate-900/30 border-t border-slate-700/30">
-        <div className="flex items-center justify-between text-xs font-mono text-gray-400">
-          <span>[ REAL-TIME MARKET DATA ]</span>
-          <span>[ UPDATE FREQ: 5s ]</span>
+      <div className="relative px-6 py-4 bg-gradient-to-r from-black/80 via-slate-900/60 to-black/80 border-t border-cyan-500/20 backdrop-blur-sm">
+        <div className="flex items-center justify-between text-xs font-mono text-cyan-400">
+          <span className="flex items-center space-x-2">
+            <Zap className="h-3 w-3 text-emerald-400" />
+            <span>[ MARKET_SCAN: {SYMBOLS.length} ASSETS ]</span>
+          </span>
+          <span className="flex items-center space-x-2">
+            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+            <span>[ FEEDS_ACTIVE ]</span>
+          </span>
         </div>
       </div>
     </motion.div>
@@ -391,40 +440,96 @@ function PriceDisplayFallback() {
     }
   }, [isHydrated])
 
+  const getSentimentColor = (sentiment: string) => {
+    if (sentiment === 'Very Bullish') return 'from-emerald-400 via-green-400 to-lime-300'
+    if (sentiment === 'Bullish') return 'from-green-400 via-emerald-400 to-teal-300'
+    if (sentiment === 'Bearish') return 'from-orange-400 via-yellow-400 to-amber-300'
+    if (sentiment === 'Very Bearish') return 'from-red-400 via-pink-400 to-rose-300'
+    return 'from-gray-400 via-slate-400 to-zinc-300'
+  }
+
+  const getSentimentGlow = (sentiment: string) => {
+    if (sentiment === 'Very Bullish') return 'shadow-[0_0_15px_rgba(34,197,94,0.6)]'
+    if (sentiment === 'Bullish') return 'shadow-[0_0_12px_rgba(34,197,94,0.4)]'
+    if (sentiment === 'Bearish') return 'shadow-[0_0_12px_rgba(251,146,60,0.4)]'
+    if (sentiment === 'Very Bearish') return 'shadow-[0_0_15px_rgba(239,68,68,0.4)]'
+    return 'shadow-[0_0_8px_rgba(148,163,184,0.3)]'
+  }
+
+  const formatPrice = (price: number): string => {
+    if (price === 0) return '$0.00';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: price < 1 ? 4 : 2
+    }).format(price);
+  };
+
+  const formatLargeNumber = (value: number): string => {
+    if (value >= 1000000000000) {
+      return `$${(value / 1000000000000).toFixed(2)}T`;
+    } else if (value >= 1000000000) {
+      return `$${(value / 1000000000).toFixed(2)}B`;
+    } else if (value >= 1000000) {
+      return `$${(value / 1000000).toFixed(2)}M`;
+    } else if (value >= 1000) {
+      return `$${(value / 1000).toFixed(2)}K`;
+    } else {
+      return `$${value.toFixed(2)}`;
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 rounded-lg overflow-hidden"
+      className="relative overflow-hidden rounded-lg border border-cyan-500/30 bg-gradient-to-br from-black/90 via-slate-900/80 to-black/90 shadow-2xl shadow-cyan-500/20 backdrop-blur-md"
     >
-      <div className="flex items-center justify-between p-6 border-b border-slate-700/30">
+      {/* Animated Background Pattern */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/5 to-transparent animate-pulse"></div>
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"></div>
+      </div>
+
+      {/* Header */}
+      <div className="relative flex items-center justify-between p-6 border-b border-cyan-500/20 bg-gradient-to-r from-black/50 via-slate-900/30 to-black/50">
         <div className="flex items-center space-x-3">
-          <img
-            src={`/images/section-logos/market-intelligence.png${cacheBustParam}`}
-            alt="Market Intelligence"
-            className="h-8 w-8 object-contain"
-            onError={(e) => {
-              // Fallback to bradley logo if section logo fails to load
-              const target = e.currentTarget as HTMLImageElement;
-              if (target.src.includes('market-intelligence.png')) {
-                target.src = '/bradley-logo.png';
-                target.className = 'h-8 w-8 rounded-full object-cover';
-              }
-            }}
-          />
-          <h2 className="text-lg font-mono font-bold text-white uppercase tracking-wide">
+          <div className="relative">
+            <img
+              src={`/images/section-logos/market-intelligence.png${cacheBustParam}`}
+              alt="Market Intelligence"
+              className="h-8 w-8 object-contain drop-shadow-lg shadow-cyan-400/50"
+              onError={(e) => {
+                // Fallback to original icon if image fails to load
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            <TrendingUp className="h-8 w-8 text-cyan-400 hidden drop-shadow-lg shadow-cyan-400/50" />
+            <div className="absolute inset-0 bg-cyan-400/20 rounded-full blur-sm animate-pulse"></div>
+          </div>
+          <h2 className="bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-300 bg-clip-text text-lg font-mono font-bold text-transparent uppercase tracking-wide drop-shadow-lg">
             MARKET INTELLIGENCE
           </h2>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-xs font-mono text-green-400 uppercase">LOADING</span>
+
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/50"></div>
+            <span className="text-xs font-mono text-yellow-400 uppercase tracking-wider drop-shadow-sm">LOADING</span>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-6 gap-4 px-6 py-4 bg-slate-900/50 text-xs font-mono text-gray-400 uppercase tracking-wider border-b border-slate-700/30">
-        <div>ASSET</div>
+      {/* Table Header */}
+      <div className="grid grid-cols-6 gap-4 px-6 py-4 bg-gradient-to-r from-slate-900/80 via-slate-800/60 to-slate-900/80 text-xs font-mono text-cyan-300 uppercase tracking-wider border-b border-cyan-500/20 backdrop-blur-sm">
+        <div className="flex items-center space-x-1">
+          <span>ASSET</span>
+          <TrendingUp className="h-3 w-3 text-emerald-400" />
+        </div>
         <div>PRICE_USD</div>
         <div>DELTA_24H</div>
         <div>VOLUME</div>
@@ -432,81 +537,101 @@ function PriceDisplayFallback() {
         <div>STATUS</div>
       </div>
 
-      <div className="divide-y divide-slate-700/30">
+      <div className="divide-y divide-cyan-500/10 relative z-10">
         {FALLBACK_PRICES && Object.entries(FALLBACK_PRICES).map(([symbol, data], index) => {
           const changePercent = data.changePercent;
           const isPositive = changePercent >= 0;
 
           return (
-            <div
+            <motion.div
               key={symbol}
-              className="grid grid-cols-6 gap-4 px-6 py-4 hover:bg-slate-700/20 transition-colors"
+              initial={{ opacity: 0, x: -20, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ delay: index * 0.08, duration: 0.4, type: "spring", stiffness: 100 }}
+              className="relative group"
             >
-              {/* Asset */}
-              <div className="flex items-center space-x-3">
-                <MarketCryptoIcon symbol={symbol} className="w-8 h-8" />
-                <div>
-                  <div className="text-sm font-mono font-semibold text-white">
-                    {symbol}
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-emerald-500/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+              <div className="relative bg-slate-900/40 backdrop-blur-sm border-l-2 border-l-transparent hover:border-l-cyan-400/50 transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.1)]">
+                <div className="grid grid-cols-6 gap-4 px-6 py-4">
+                  {/* Asset */}
+                  <div className="flex items-center space-x-3">
+                    <MarketCryptoIcon symbol={symbol} className="w-8 h-8" />
+                    <div>
+                      <div className="text-sm font-mono font-bold text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.3)]">
+                        {symbol}
+                      </div>
+                      <div className="text-xs font-mono text-cyan-200/60">
+                        {SYMBOL_NAMES[symbol]}
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-xs font-mono text-gray-400">
-                    {SYMBOL_NAMES[symbol]}
+
+                  {/* Price */}
+                  <div className="flex items-center">
+                    <span className="text-sm font-mono font-bold text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.3)]">
+                      {formatPrice(data.price)}
+                    </span>
+                  </div>
+
+                  {/* Delta 24H */}
+                  <div className="flex items-center">
+                    <span className={cn(
+                      "text-sm font-mono font-semibold flex items-center space-x-1 px-2 py-1 rounded-lg border shadow-lg",
+                      isPositive
+                        ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/30 shadow-emerald-500/20"
+                        : "text-red-400 bg-red-500/10 border-red-500/30 shadow-red-500/20"
+                    )}>
+                      <TrendingUp className={cn("h-3 w-3", !isPositive && "rotate-180")} />
+                      <span>{isPositive ? "+" : ""}{changePercent.toFixed(2)}%</span>
+                    </span>
+                  </div>
+
+                  {/* Volume */}
+                  <div className="flex items-center">
+                    <span className="text-sm font-mono text-white drop-shadow-sm">
+                      {formatLargeNumber(data.volume)}
+                    </span>
+                  </div>
+
+                  {/* Market Cap */}
+                  <div className="flex items-center">
+                    <span className="text-sm font-mono text-white drop-shadow-sm">
+                      {formatLargeNumber(data.marketCap)}
+                    </span>
+                  </div>
+
+                  {/* Status */}
+                  <div className="flex items-center">
+                    <span className={cn(
+                      "px-3 py-1 rounded-full text-xs font-mono font-bold border",
+                      `bg-gradient-to-r ${getSentimentColor(data.sentiment)} ${getSentimentGlow(data.sentiment)}`,
+                      data.sentiment === 'Very Bullish' || data.sentiment === 'Bullish'
+                        ? "border-green-400/40 text-black"
+                        : data.sentiment === 'Bearish' || data.sentiment === 'Very Bearish'
+                        ? "border-red-400/40 text-black"
+                        : "border-gray-400/40 text-black"
+                    )}>
+                      {data.sentiment.replace(' ', '').toUpperCase()}
+                    </span>
                   </div>
                 </div>
               </div>
-
-              {/* Price */}
-              <div className="text-sm font-mono text-white">
-                {new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'USD',
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: data.price < 1 ? 4 : 2
-                }).format(data.price)}
-              </div>
-
-              {/* Delta 24H */}
-              <div className="flex items-center">
-                <span className={cn(
-                  "text-sm font-mono font-semibold flex items-center",
-                  isPositive ? "text-green-400" : "text-red-400"
-                )}>
-                  {isPositive ? "↑" : "↓"} {isPositive ? "+" : ""}{changePercent.toFixed(2)}%
-                </span>
-              </div>
-
-              {/* Volume */}
-              <div className="text-sm font-mono text-gray-300">
-                ${(data.volume / 1000000000).toFixed(2)}B
-              </div>
-
-              {/* Market Cap */}
-              <div className="text-sm font-mono text-gray-300">
-                ${(data.marketCap / 1000000000).toFixed(2)}B
-              </div>
-
-              {/* Status */}
-              <div className="text-sm font-mono">
-                <span className={cn(
-                  "px-2 py-1 rounded text-xs font-mono font-semibold",
-                  data.sentiment === 'Very Bullish' ? "bg-green-500/20 text-green-400 border border-green-500/40" :
-                  data.sentiment === 'Bullish' ? "bg-green-400/20 text-green-400 border border-green-400/40" :
-                  data.sentiment === 'Bearish' ? "bg-red-400/20 text-red-400 border border-red-400/40" :
-                  data.sentiment === 'Very Bearish' ? "bg-red-500/20 text-red-500 border border-red-500/40" :
-                  "bg-gray-500/20 text-gray-400 border border-gray-500/40"
-                )}>
-                  {data.sentiment.replace(' ', '').toUpperCase()}
-                </span>
-              </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
 
-      <div className="px-6 py-4 bg-slate-900/30 border-t border-slate-700/30">
-        <div className="flex items-center justify-between text-xs font-mono text-gray-400">
-          <span>[ CONNECTING TO MARKET FEED... ]</span>
-          <span>[ INITIALIZING... ]</span>
+      <div className="relative px-6 py-4 bg-gradient-to-r from-black/80 via-slate-900/60 to-black/80 border-t border-cyan-500/20 backdrop-blur-sm">
+        <div className="flex items-center justify-between text-xs font-mono text-cyan-400">
+          <span className="flex items-center space-x-2">
+            <Zap className="h-3 w-3 text-emerald-400" />
+            <span>[ MARKET_SCAN: {Object.keys(FALLBACK_PRICES).length} ASSETS ]</span>
+          </span>
+          <span className="flex items-center space-x-2">
+            <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse"></div>
+            <span>[ INITIALIZING... ]</span>
+          </span>
         </div>
       </div>
     </motion.div>

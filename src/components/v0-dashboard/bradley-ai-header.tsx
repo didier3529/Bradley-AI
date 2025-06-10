@@ -1,5 +1,6 @@
 "use client"
 
+import { WalletConnection } from '@/components/wallet-connection'
 import { motion } from 'framer-motion'
 
 export function BradleyAIHeader() {
@@ -49,13 +50,23 @@ export function BradleyAIHeader() {
                 </div>
             </div>
 
-            {/* Connection Status */}
+            {/* Connection Status and Wallet */}
             <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
-                className="flex items-center space-x-4"
+                className="flex items-center space-x-6"
             >
+                {/* Wallet Connection Button */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5, duration: 0.4 }}
+                >
+                    <WalletConnection />
+                </motion.div>
+
+                {/* System Status */}
                 <div className="text-right">
                     <div className="text-xs font-mono text-gray-400 uppercase tracking-wider">
                         SYSTEM STATUS

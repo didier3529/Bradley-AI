@@ -5,14 +5,14 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { useAuth } from "@/lib/providers/auth-provider"
 import { cn } from "@/lib/utils"
 import {
-  BarChart3,
-  FileCode,
-  Gem,
-  LayoutDashboard,
-  LineChart,
-  LogOut,
-  Settings,
-  Zap
+    BarChart3,
+    FileCode,
+    Gem,
+    LayoutDashboard,
+    LineChart,
+    LogOut,
+    Settings,
+    Zap
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -41,7 +41,7 @@ const sidebarLinks = [
   },
   {
     label: "Market Analysis",
-    href: "/v0-dashboard",
+    href: "/",
     icon: LineChart,
     description: "Market trends and analysis",
   },
@@ -259,4 +259,4 @@ export function UnifiedSidebar() {
       </aside>
     </TooltipProvider>
   )
-} 
+}

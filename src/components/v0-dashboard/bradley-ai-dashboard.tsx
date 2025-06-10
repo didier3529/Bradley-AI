@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 // Import new v0-specific components that use the existing backend
 import DirectPriceDisplay from '@/components/direct-price-display'
-import { EnhancedBradleyAILoader } from '@/components/enhanced-loading/EnhancedBradleyAILoader'
+import { SimpleLoading } from '@/components/ui/simple-loading'
 import { BradleyAIHeader } from './bradley-ai-header'
 import { BradleyAIStatsCards } from './bradley-ai-stats-cards'
 import { MatrixBackground } from './matrix-background'
@@ -123,18 +123,15 @@ export function BradleyAIDashboard() {
     const [isLoading, setIsLoading] = useState(true)
     const [isReady, setIsReady] = useState(false)
 
-    // Enhanced loading experience duration
+    // Simple loading with shorter duration
     useEffect(() => {
-        // Let the enhanced loader complete its full experience (approximately 8-12 seconds)
-        // The loader will call onComplete when it's finished
-        const fallbackTimer = setTimeout(() => {
-            // Fallback in case the loader doesn't call onComplete
+        const timer = setTimeout(() => {
             setIsLoading(false)
             setIsReady(true)
-        }, 15000) // 15 second fallback
+        }, 2000) // 2 second loading time
 
         return () => {
-            clearTimeout(fallbackTimer)
+            clearTimeout(timer)
         }
     }, [])
 
@@ -143,20 +140,8 @@ export function BradleyAIDashboard() {
             {/* Matrix Background */}
             <MatrixBackground />
 
-            {/* Enhanced Loading Experience */}
-            {isLoading && (
-                <EnhancedBradleyAILoader
-                    isVisible={isLoading}
-                    onComplete={() => {
-                        setIsLoading(false)
-                        setIsReady(true)
-                    }}
-                    enableAudio={false} // Disabled by default for better UX
-                    enableParticles={true}
-                    enableDigitalRain={true}
-                    performanceMode="auto"
-                />
-            )}
+            {/* Simple Clean Loading */}
+            <SimpleLoading isVisible={isLoading} />
 
             {/* Main Dashboard Content */}
             <motion.div

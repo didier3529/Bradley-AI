@@ -1,5 +1,5 @@
-import { NFT, NFTCollection, NFTMarketplaceStats, NFTMetadata, NFTTrait, NFTOwner, PaginatedCollectionResponse, PaginatedNFTResponse, NFTQueryFilters } from '../types/nft-types';
 import { NFTMarketOverview } from '@/lib/types/nft-types';
+import { NFT, NFTCollection, NFTMarketplaceStats, NFTMetadata, NFTOwner, NFTTrait, PaginatedCollectionResponse, PaginatedNFTResponse } from '../types/nft-types';
 
 // --- Mock Individual NFTs ---
 export const mockNftTrait1: NFTTrait = {
@@ -458,4 +458,4 @@ const mockNFTMarket: NFTMarketOverview = {
   ]
 };
 
-export default mockNFTMarket; 
+export default mockNFTMarket;

@@ -20,7 +20,7 @@ const navLinks = [
   },
   {
     name: "Market",
-    href: "/v0-dashboard",
+    href: "/",
     icon: TrendingUp,
   },
   {

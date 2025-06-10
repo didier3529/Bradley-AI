@@ -1,9 +1,11 @@
 "use client"
 
 import { useHydration } from '@/components/ui/hydration-safe'
+import { useWallet } from '@/hooks/useWallet'
 import { useTokenPrices } from '@/lib/providers/price-provider'
+import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
-import { Wallet } from 'lucide-react'
+import { Link2, TrendingUp, Wallet, Zap } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 interface PortfolioAsset {
@@ -31,7 +33,106 @@ const SYMBOL_NAMES: Record<string, string> = {
     'DOT': 'Polkadot',
 }
 
+// Crypto logos matching Market Intelligence section exactly
+const CRYPTO_LOGOS: Record<string, string> = {
+  'BTC': '/crypto-logos/mcp/btc.svg',
+  'ETH': '/crypto-icons/eth.svg', // Use working logo from crypto-icons directory
+  'SOL': '/crypto-logos/mcp/sol.svg',
+  'ADA': '/crypto-logos/mcp/ada.svg',
+  'DOT': '/crypto-logos/mcp/dot.svg',
+}
+
 const TRACKED_SYMBOLS = ['BTC', 'ETH', 'SOL', 'ADA', 'DOT'] as const
+
+// Enhanced sentiment color functions matching Market Intelligence and Social Sentiment
+const getSentimentColor = (change: number) => {
+    if (change >= 5) return "from-emerald-400 via-green-400 to-lime-300"
+    if (change >= 0) return "from-green-500 via-emerald-500 to-green-400"
+    if (change >= -5) return "from-orange-500 via-amber-500 to-yellow-400"
+    return "from-red-500 via-rose-500 to-pink-400"
+}
+
+const getSentimentGlow = (change: number) => {
+    if (change >= 5) return "shadow-emerald-500/50"
+    if (change >= 0) return "shadow-green-500/40"
+    if (change >= -5) return "shadow-orange-500/40"
+    return "shadow-red-500/50"
+}
+
+// Shared CryptoIcon component matching Market Intelligence exactly
+function PortfolioCryptoIcon({ symbol, className }: { symbol: string; className?: string }) {
+  const [imageError, setImageError] = useState(false);
+  const logoPath = CRYPTO_LOGOS[symbol];
+
+  // Fallback for symbols that don't have logos - same as Market Intelligence
+  if (!logoPath || imageError) {
+    const fallbackColors: Record<string, string> = {
+      'BTC': 'bg-gradient-to-br from-orange-500 via-orange-400 to-amber-400',
+      'ETH': 'bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500',
+      'SOL': 'bg-gradient-to-br from-purple-500 via-violet-500 to-purple-400',
+      'ADA': 'bg-gradient-to-br from-blue-400 via-sky-500 to-cyan-400',
+      'DOT': 'bg-gradient-to-br from-pink-500 via-rose-500 to-red-400',
+    };
+
+    return (
+      <div className={cn(
+        "w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg drop-shadow-lg",
+        fallbackColors[symbol] || 'bg-gradient-to-br from-gray-500 to-gray-600',
+        getSentimentGlow(Math.random() * 10 - 5), // Random glow for demo
+        className
+      )}>
+        {symbol.charAt(0)}
+        <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/10 to-white/20 rounded-full"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      <img
+        src={logoPath}
+        alt={symbol}
+        className={cn("w-8 h-8 rounded-full object-cover shadow-lg shadow-cyan-500/20", className)}
+        onError={() => setImageError(true)}
+        loading="eager"
+      />
+      <div className="absolute inset-0 bg-cyan-400/10 rounded-full animate-pulse"></div>
+    </div>
+  );
+}
+
+// Enhanced wallet connection prompt with Matrix styling
+function WalletConnectionPrompt() {
+    return (
+        <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-emerald-500/10 to-cyan-500/5 rounded-lg animate-pulse"></div>
+            <div className="relative text-center py-8 bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80 rounded-lg border border-cyan-500/20">
+                <div className="flex justify-center mb-4">
+                    <div className="relative">
+                        <Wallet className="h-12 w-12 text-cyan-400 drop-shadow-lg" />
+                        <div className="absolute inset-0 bg-cyan-400/20 rounded-full blur-md animate-pulse"></div>
+                    </div>
+                </div>
+                <h3 className="bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-300 bg-clip-text text-lg font-mono font-bold text-transparent mb-2 drop-shadow-lg">
+                    Connect Wallet
+                </h3>
+                <p className="text-sm font-mono text-slate-400 mb-4">
+                    Connect your wallet to view portfolio holdings
+                </p>
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-6 py-2 bg-gradient-to-r from-cyan-500/20 via-emerald-500/20 to-cyan-500/20 border border-cyan-500/40 rounded-lg text-sm font-mono text-cyan-400 hover:bg-gradient-to-r hover:from-cyan-500/30 hover:via-emerald-500/30 hover:to-cyan-500/30 transition-all duration-300 shadow-lg shadow-cyan-500/20"
+                >
+                    <div className="flex items-center space-x-2">
+                        <Link2 className="h-4 w-4" />
+                        <span>Connect Wallet</span>
+                    </div>
+                </motion.button>
+            </div>
+        </div>
+    )
+}
 
 export function PortfolioHoldings() {
     const [assets, setAssets] = useState<PortfolioAsset[]>([])
@@ -39,6 +140,9 @@ export function PortfolioHoldings() {
     const [isLoading, setIsLoading] = useState(true)
     const [cacheBustParam, setCacheBustParam] = useState('')
     const isHydrated = useHydration()
+
+    // Wallet connection state
+    const { isConnected, wallet } = useWallet()
 
     // Use existing price provider with stable symbol array
     const { prices, isLoading: pricesLoading } = useTokenPrices(TRACKED_SYMBOLS)
@@ -62,20 +166,10 @@ export function PortfolioHoldings() {
         return balance.toFixed(2)
     }, [])
 
-    const getCryptoIcon = useCallback((symbol: string) => {
-        const icons: { [key: string]: { icon: string; color: string } } = {
-            'BTC': { icon: '₿', color: 'text-orange-400' },
-            'ETH': { icon: 'Ξ', color: 'text-blue-400' },
-            'SOL': { icon: '◎', color: 'text-purple-400' },
-            'ADA': { icon: '₳', color: 'text-blue-300' },
-            'DOT': { icon: '●', color: 'text-pink-400' },
-        }
-        return icons[symbol] || { icon: '●', color: 'text-gray-400' }
-    }, [])
-
     // Memoize portfolio calculation to prevent unnecessary recalculations
     const portfolioData = useMemo(() => {
-        if (!prices || Object.keys(prices).length === 0) {
+        // Only show portfolio data if wallet is connected
+        if (!isConnected || !prices || Object.keys(prices).length === 0) {
             return { assets: [], totalValue: 0 }
         }
 
@@ -103,23 +197,27 @@ export function PortfolioHoldings() {
         const total = portfolioAssets.reduce((sum, asset) => sum + asset.value, 0)
 
         return { assets: portfolioAssets, totalValue: total }
-    }, [prices])
+    }, [prices, isConnected])
 
     // Effect to update state - separated and simplified to prevent loops
     useEffect(() => {
-        if (portfolioData.assets.length > 0) {
+        if (isConnected && portfolioData.assets.length > 0) {
             setAssets(portfolioData.assets)
             setTotalValue(portfolioData.totalValue)
             setIsLoading(false)
+        } else if (!isConnected) {
+            setAssets([])
+            setTotalValue(0)
+            setIsLoading(false)
         }
-    }, [portfolioData])
+    }, [portfolioData, isConnected])
 
     // Effect to handle loading state
     useEffect(() => {
-        if (pricesLoading) {
+        if (pricesLoading && isConnected) {
             setIsLoading(true)
         }
-    }, [pricesLoading])
+    }, [pricesLoading, isConnected])
 
     // Client-side cache busting after hydration
     useEffect(() => {
@@ -133,86 +231,136 @@ export function PortfolioHoldings() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 rounded-lg overflow-hidden"
+            className="relative overflow-hidden rounded-lg border border-cyan-500/30 bg-gradient-to-br from-black/90 via-slate-900/80 to-black/90 shadow-2xl shadow-cyan-500/20 backdrop-blur-md"
         >
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-700/30">
-                <div className="flex items-center space-x-2">
-                    <img
-                        src={`/images/section-logos/portfolio-holdings.png${cacheBustParam}`}
-                        alt="Portfolio Holdings"
-                        className="h-6 w-6 object-contain"
-                        onError={(e) => {
-                            // Fallback to original icon if image fails to load
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                        }}
-                    />
-                    <Wallet className="h-4 w-4 text-green-400 hidden" />
-                    <h3 className="text-sm font-mono font-bold text-white uppercase tracking-wide">
-                        Portfolio Holdings
-                    </h3>
-                </div>
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            {/* Animated Background Pattern */}
+            <div className="absolute inset-0 opacity-30">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/5 to-transparent animate-pulse"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"></div>
             </div>
 
-            {/* Holdings List */}
-            <div className="p-4 space-y-3">
-                {isLoading || pricesLoading ? (
-                    <div className="text-center py-4">
-                        <div className="text-xs font-mono text-gray-400">Loading holdings...</div>
+            {/* Header */}
+            <div className="relative flex items-center justify-between p-4 border-b border-cyan-500/20 bg-gradient-to-r from-black/50 via-slate-900/30 to-black/50">
+                <div className="flex items-center space-x-2">
+                    <div className="relative">
+                        <img
+                            src={`/images/section-logos/portfolio-holdings.png${cacheBustParam}`}
+                            alt="Portfolio Holdings"
+                            className="h-6 w-6 object-contain drop-shadow-lg shadow-cyan-400/50"
+                            onError={(e) => {
+                                // Fallback to original icon if image fails to load
+                                e.currentTarget.style.display = 'none';
+                                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                            }}
+                        />
+                        <Wallet className="h-4 w-4 text-emerald-400 hidden drop-shadow-lg shadow-emerald-400/50" />
+                        <div className="absolute inset-0 bg-cyan-400/20 rounded-full blur-sm animate-pulse"></div>
                     </div>
-                ) : (
-                    assets.map((asset, index) => {
-                        const cryptoIcon = getCryptoIcon(asset.symbol)
-                        return (
-                            <motion.div
-                                key={asset.symbol}
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: index * 0.1, duration: 0.3 }}
-                                className="flex items-center justify-between py-2 hover:bg-slate-700/20 rounded transition-colors"
-                            >
-                                <div className="flex items-center space-x-3">
-                                    <div className={`text-base font-mono font-bold ${cryptoIcon.color}`}>
-                                        {cryptoIcon.icon}
-                                    </div>
-                                    <div>
-                                        <div className="text-sm font-mono font-semibold text-white">
-                                            {asset.symbol}
-                                        </div>
-                                        <div className="text-xs font-mono text-gray-400">
-                                            {formatBalance(asset.balance, asset.symbol)} {asset.symbol}
-                                        </div>
-                                    </div>
-                                </div>
+                    <h3 className="bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-300 bg-clip-text text-sm font-mono font-bold text-transparent uppercase tracking-wide drop-shadow-lg">
+                        Portfolio Holdings
+                    </h3>
+                    {/* Mock data indicator when wallet is connected */}
+                    {isConnected && (
+                        <span className="text-xs font-mono text-slate-400 bg-slate-700/50 px-2 py-0.5 rounded border border-slate-600/30">
+                            DEMO
+                        </span>
+                    )}
+                </div>
 
-                                <div className="text-right">
-                                    <div className="text-sm font-mono font-semibold text-white">
-                                        {formatCurrency(asset.value)}
+                <div className="flex items-center space-x-2">
+                    <div className={`w-2 h-2 rounded-full animate-pulse shadow-lg ${
+                        isConnected ? 'bg-emerald-400 shadow-emerald-400/50' : 'bg-slate-500 shadow-slate-500/30'
+                    }`}></div>
+                    <span className={`text-xs font-mono uppercase tracking-wider drop-shadow-sm ${
+                        isConnected ? 'text-emerald-400' : 'text-slate-500'
+                    }`}>
+                        {isConnected ? 'CONNECTED' : 'DISCONNECTED'}
+                    </span>
+                </div>
+            </div>
+
+            {/* Content */}
+            <div className="relative p-4">
+                {!isConnected ? (
+                    // Show wallet connection prompt when not connected
+                    <WalletConnectionPrompt />
+                ) : (
+                    // Show portfolio data when connected
+                    <div className="space-y-3">
+                        {isLoading || pricesLoading ? (
+                            <div className="text-center py-4">
+                                <motion.div
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                    className="inline-block w-6 h-6 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full mb-2"
+                                ></motion.div>
+                                <div className="text-xs font-mono text-cyan-400">Loading holdings...</div>
+                            </div>
+                        ) : (
+                            assets.map((asset, index) => (
+                                <motion.div
+                                    key={asset.symbol}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.1, duration: 0.3 }}
+                                    className="relative flex items-center justify-between py-2 hover:bg-gradient-to-r hover:from-cyan-500/5 hover:via-emerald-500/5 hover:to-cyan-500/5 rounded transition-all duration-300 group"
+                                >
+                                    {/* Hover glow effect */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-emerald-500/5 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded"></div>
+
+                                    <div className="relative flex items-center space-x-3">
+                                        <PortfolioCryptoIcon symbol={asset.symbol} className="w-6 h-6" />
+                                        <div>
+                                            <div className="text-sm font-mono font-semibold text-white drop-shadow-sm">
+                                                {asset.symbol}
+                                            </div>
+                                            <div className="text-xs font-mono text-slate-400 drop-shadow-sm">
+                                                {formatBalance(asset.balance, asset.symbol)} {asset.symbol}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className={`text-xs font-mono ${asset.change >= 0 ? 'text-green-400' : 'text-red-400'
-                                        }`}>
-                                        {asset.change >= 0 ? '+' : ''}{asset.change.toFixed(2)}%
+
+                                    <div className="relative text-right">
+                                        <div className="text-sm font-mono font-semibold text-cyan-300 drop-shadow-sm">
+                                            {formatCurrency(asset.value)}
+                                        </div>
+                                        <div className={cn(
+                                            "text-xs font-mono flex items-center space-x-1 justify-end",
+                                            asset.change >= 0 ? 'text-emerald-400' : 'text-red-400'
+                                        )}>
+                                            <TrendingUp className={cn("h-3 w-3", asset.change < 0 && "rotate-180")} />
+                                            <span>
+                                                {asset.change >= 0 ? '+' : ''}{asset.change.toFixed(2)}%
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        )
-                    })
+                                </motion.div>
+                            ))
+                        )}
+                    </div>
                 )}
             </div>
 
-            {/* Total Portfolio Value */}
-            <div className="px-4 py-3 bg-slate-900/30 border-t border-slate-700/30">
-                <div className="flex items-center justify-between">
-                    <div className="text-xs font-mono text-gray-400 uppercase tracking-wider">
-                        Total Portfolio Value
-                    </div>
-                    <div className="text-sm font-mono font-bold text-cyan-400">
-                        {formatCurrency(totalValue)}
+            {/* Total Portfolio Value - Only show when connected */}
+            {isConnected && (
+                <div className="relative px-4 py-3 bg-gradient-to-r from-black/80 via-slate-900/60 to-black/80 border-t border-cyan-500/20 backdrop-blur-sm">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                            <Zap className="h-3 w-3 text-emerald-400" />
+                            <div className="text-xs font-mono text-cyan-400 uppercase tracking-wider">
+                                Total Portfolio Value
+                            </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+                            <div className="text-sm font-mono font-bold text-emerald-400 drop-shadow-lg">
+                                {formatCurrency(totalValue)}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </motion.div>
     )
 }

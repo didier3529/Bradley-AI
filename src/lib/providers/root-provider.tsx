@@ -6,18 +6,18 @@
  * All other providers are composed within this component.
  */
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { PortfolioProvider } from "@/lib/providers/portfolio-provider"
-import { MarketProvider } from "./market-provider"
-import { NFTProvider } from "./nft-provider"
-import { ContractProvider } from "./contract-provider"
-import { SettingsProvider } from "./settings-provider"
-import { AuthProvider } from "@/lib/providers/auth-provider"
-import { PriceProvider } from "./price-provider"
-import { useState, useCallback } from "react"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { Toaster } from "@/components/ui/toaster"
-import { ErrorBoundary } from "@/components/error-boundary"
+import { ErrorBoundary } from "@/components/error-boundary";
+import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from "@/lib/providers/auth-provider";
+import { PortfolioProvider } from "@/lib/providers/portfolio-provider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useCallback, useState } from "react";
+import { ContractProvider } from "./contract-provider";
+import { MarketProvider } from "./market-provider";
+import { NFTProvider } from "./nft-provider";
+import { PriceProvider } from "./price-provider";
+import { SettingsProvider } from "./settings-provider";
 
 // Enhanced error boundary component for portfolio-specific errors
 function PortfolioErrorFallback({
@@ -124,34 +124,60 @@ export const RootProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient} onError={handleQueryError}>
-        <AuthProvider>
-          <SettingsProvider>
+      {/* React Query Provider - Top level for data fetching */}
+      <QueryClientProvider client={queryClient}>
+        {/* Settings must be the outermost app-specific provider */}
+        <SettingsProvider>
+
+          {/* Authentication Provider */}
+          <AuthProvider>
+
+            {/* Price data provider - Must be before MarketProvider */}
             <PriceProvider>
-              {/* Wrap PortfolioProvider in its own error boundary to prevent cascade failures */}
-              <ErrorBoundary
-                fallback={PortfolioErrorFallback}
-                onError={(error, errorInfo) => {
-                  console.error('[RootProvider] Portfolio Error Boundary triggered:', error, errorInfo)
-                  // Could add error reporting service here
-                }}
-              >
-                <PortfolioProvider>
-                  <MarketProvider>
-                    <NFTProvider>
-                      <ContractProvider>
+
+              {/* Market data provider - Depends on PriceProvider */}
+              <MarketProvider>
+
+                {/* Contract interaction provider */}
+                <ContractProvider>
+
+                  {/* NFT data provider */}
+                  <NFTProvider>
+
+                    {/* Portfolio data with enhanced error boundary */}
+                    <ErrorBoundary
+                      fallback={PortfolioErrorFallback}
+                      onReset={handlePortfolioReset}
+                    >
+                      <PortfolioProvider>
                         {children}
-                        <Toaster />
-                      </ContractProvider>
-                    </NFTProvider>
-                  </MarketProvider>
-                </PortfolioProvider>
-              </ErrorBoundary>
+                      </PortfolioProvider>
+                    </ErrorBoundary>
+
+                  </NFTProvider>
+
+                </ContractProvider>
+
+              </MarketProvider>
+
             </PriceProvider>
-          </SettingsProvider>
-        </AuthProvider>
-        {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />}
+
+          </AuthProvider>
+
+        </SettingsProvider>
+
+        {/* UI Components */}
+        <Toaster />
+
+        {/* Development Tools */}
+        {process.env.NODE_ENV === 'development' && (
+          <ReactQueryDevtools
+            initialIsOpen={false}
+            position="bottom-right"
+          />
+        )}
+
       </QueryClientProvider>
     </ErrorBoundary>
-  )
-}
+  );
+};

@@ -1,13 +1,13 @@
 "use client"
 
-import { useState, useEffect, useCallback, useTransition } from "react"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/ui/logo"
+import { WalletConnection } from "@/components/wallet-connection"
 import { useAuth } from "@/lib/providers/auth-provider"
-import { toast } from "@/components/ui/use-toast"
+import { Menu, X } from "lucide-react"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import { useCallback, useEffect, useState, useTransition } from "react"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -15,7 +15,7 @@ export function Navbar() {
   const [isPending, startTransition] = useTransition()
   const pathname = usePathname()
   const router = useRouter()
-  const { user, connectWallet, isAuthenticated, isLoading: authLoading } = useAuth()
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,38 +30,6 @@ export function Navbar() {
       router.push(path)
     })
   }, [router])
-
-  const handleConnectWallet = useCallback(async () => {
-    try {
-      // If already authenticated, just navigate to dashboard
-      if (isAuthenticated) {
-        handleNavigation("/dashboard")
-        return
-      }
-      
-      // Try to connect wallet
-      const success = await connectWallet()
-      
-      if (success) {
-        // If connection successful, navigate to dashboard
-        handleNavigation("/dashboard")
-      } else {
-        // Show error toast if connection failed
-        toast({
-          title: "Connection failed",
-          description: "Could not connect to wallet. Please try again.",
-          variant: "destructive",
-        })
-      }
-    } catch (error) {
-      console.error('Failed to connect wallet:', error)
-      toast({
-        title: "Connection error",
-        description: error instanceof Error ? error.message : "Unknown error occurred",
-        variant: "destructive",
-      })
-    }
-  }, [isAuthenticated, connectWallet, handleNavigation])
 
   // Define navigation items based on authentication state
   const getNavItems = useCallback(() => {
@@ -105,7 +73,7 @@ export function Navbar() {
                   href={item.href}
                   className={`transition-colors ${
                     pathname === item.href || pathname.startsWith(item.href.split('#')[0] + '/')
-                      ? "text-white font-medium" 
+                      ? "text-white font-medium"
                       : "text-gray-300 hover:text-white"
                   }`}
                 >
@@ -113,13 +81,18 @@ export function Navbar() {
                 </Link>
               ))}
             </div>
-            <Button
-              onClick={handleConnectWallet}
-              disabled={isPending || authLoading}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-full px-6"
-            >
-              {isPending || authLoading ? "Loading..." : isAuthenticated ? "Dashboard" : "Connect Wallet"}
-            </Button>
+
+            {isAuthenticated ? (
+              <Button
+                onClick={() => handleNavigation("/dashboard")}
+                disabled={isPending || authLoading}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-full px-6"
+              >
+                {isPending || authLoading ? "Loading..." : "Dashboard"}
+              </Button>
+            ) : (
+              <WalletConnection />
+            )}
           </div>
 
           {/* Mobile Navigation Toggle */}
@@ -136,8 +109,8 @@ export function Navbar() {
                 key={item.href}
                 href={item.href}
                 className={`block py-2 transition-colors ${
-                  pathname === item.href || pathname.startsWith(item.href.split('#')[0] + '/') 
-                    ? "text-white font-medium" 
+                  pathname === item.href || pathname.startsWith(item.href.split('#')[0] + '/')
+                    ? "text-white font-medium"
                     : "text-gray-300 hover:text-white"
                 }`}
                 onClick={() => setIsOpen(false)}
@@ -145,19 +118,26 @@ export function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <Button
-              onClick={async () => {
-                setIsOpen(false)
-                await handleConnectWallet()
-              }}
-              disabled={isPending || authLoading}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-full mt-4"
-            >
-              {isPending || authLoading ? "Loading..." : isAuthenticated ? "Dashboard" : "Connect Wallet"}
-            </Button>
+
+            <div className="mt-4">
+              {isAuthenticated ? (
+                <Button
+                  onClick={() => {
+                    setIsOpen(false)
+                    handleNavigation("/dashboard")
+                  }}
+                  disabled={isPending || authLoading}
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-full"
+                >
+                  {isPending || authLoading ? "Loading..." : "Dashboard"}
+                </Button>
+              ) : (
+                <WalletConnection />
+              )}
+            </div>
           </div>
         )}
       </div>
     </nav>
   )
-} 
+}

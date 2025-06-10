@@ -1,18 +1,18 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-  ReactNode,
-} from 'react';
-import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api/config';
 import { NetworkType } from '@/types/blockchain';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
+import {
+    createContext,
+    ReactNode,
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 
 // Constants
 const TOKEN_KEY = 'auth_token';
@@ -47,7 +47,6 @@ interface AuthContextType {
   error: Error | null;
   login: (address: string) => Promise<boolean>;
   logout: () => Promise<void>;
-  connectWallet: () => Promise<void>;
 }
 
 // Create context
@@ -66,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isAuthenticated: false,
     error: null,
   });
-  
+
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const verifyInterval = useRef<NodeJS.Timeout>();
@@ -90,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!isBrowser || !isMounted) {
       return false;
     }
-    
+
     try {
       const token = Cookies.get(TOKEN_KEY);
       if (!token) {
@@ -100,10 +99,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Set token in API client
       apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
+
       // Verify token with API
       const { data } = await apiClient.post('/api/auth/verify');
-      
+
       if (!data?.valid) {
         logDebug('Token invalid');
         throw new Error('Invalid token');
@@ -127,7 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!isBrowser || !isMounted) {
       return false;
     }
-  
+
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
       logDebug('Initiating login', { address });
@@ -140,7 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!window.ethereum) {
         throw new Error('Browser or ethereum provider not available');
       }
-      
+
       const signature = await window.ethereum.request({
         method: 'personal_sign',
         params: [message, address],
@@ -158,12 +157,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       // Store auth data in cookies
-      Cookies.set(TOKEN_KEY, authData.token, { 
+      Cookies.set(TOKEN_KEY, authData.token, {
         expires: 7, // 7 days
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict'
       });
-      
+
       Cookies.set(WALLET_KEY, address, {
         expires: 7,
         secure: process.env.NODE_ENV === 'production',
@@ -213,7 +212,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       Cookies.remove(WALLET_KEY);
       delete apiClient.defaults.headers.common['Authorization'];
     }
-    
+
     setState({
       user: null,
       isLoading: false,
@@ -227,56 +226,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [router]);
 
-  // Connect wallet function
-  const connectWallet = useCallback(async () => {
-    if (!isBrowser || !isMounted) {
-      return;
-    }
-    
-    try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }));
-      
-      if (!window.ethereum) {
-        throw new Error('MetaMask is not installed');
-      }
-
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-
-      if (accounts.length === 0) {
-        throw new Error('No accounts found');
-      }
-
-      await login(accounts[0]);
-    } catch (error) {
-      logDebug('Wallet connection failed', error);
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: error instanceof Error ? error : new Error('Wallet connection failed'),
-      }));
-    }
-  }, [login, logDebug, isMounted]);
-
   // Initialize auth state - only after mounting to prevent hydration issues
   useEffect(() => {
     // Skip initialization if not mounted or already initialized
     if (!isMounted || state.isInitialized || isInitializing.current) {
       return;
     }
-    
+
     const initAuth = async () => {
       try {
         isInitializing.current = true;
         setState(prev => ({ ...prev, isLoading: true }));
-        
+
         const token = Cookies.get(TOKEN_KEY);
         if (!token) {
-          setState(prev => ({ 
-            ...prev, 
+          setState(prev => ({
+            ...prev,
             isLoading: false,
-            isInitialized: true 
+            isInitialized: true
           }));
           isInitializing.current = false;
           return;
@@ -289,7 +256,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // If token is valid, fetch user data
         const { data: userData } = await apiClient.get('/api/auth/me');
-        
+
         setState({
           user: userData,
           isLoading: false,
@@ -301,14 +268,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logDebug('Auth initialized successfully', { userId: userData.id });
       } catch (error) {
         console.error('Auth initialization failed:', error);
-        
+
         // Clear invalid auth data
         if (isBrowser) {
           Cookies.remove(TOKEN_KEY);
           Cookies.remove(WALLET_KEY);
           delete apiClient.defaults.headers.common['Authorization'];
         }
-        
+
         setState({
           user: null,
           isLoading: false,
@@ -362,7 +329,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     error: state.error,
     login,
     logout,
-    connectWallet,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -374,4 +340,4 @@ export function useAuth() {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-} 
+}

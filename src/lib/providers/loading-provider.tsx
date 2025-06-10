@@ -1,6 +1,5 @@
 "use client"
 
-import { EnhancedBradleyAILoader } from '@/components/enhanced-loading/EnhancedBradleyAILoader'
 import { LoadingScreen } from '@/components/ui/loading-screen'
 import { useMarket } from '@/lib/hooks/use-market'
 import { useNFT } from '@/lib/hooks/use-nft'
@@ -11,15 +10,11 @@ import React, { useEffect, useState } from 'react'
 interface LoadingContextType {
   isLoading: boolean
   loadingMessage: string
-  useEnhancedLoader: boolean
-  setUseEnhancedLoader: (use: boolean) => void
 }
 
 export const LoadingContext = React.createContext<LoadingContextType>({
   isLoading: false,
-  loadingMessage: '',
-  useEnhancedLoader: true,
-  setUseEnhancedLoader: () => {}
+  loadingMessage: ''
 })
 
 export function LoadingProvider({ children }: { children: React.ReactNode }) {
@@ -28,7 +23,6 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
   const { isLoading: contractLoading } = useContractContext()
   const { isLoading: nftLoading } = useNFT()
 
-  const [useEnhancedLoader, setUseEnhancedLoader] = useState(true)
   const [showLoader, setShowLoader] = useState(false)
 
   const isLoading = portfolioLoading || marketLoading || contractLoading || nftLoading
@@ -38,7 +32,7 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
     contractLoading ? 'Loading contracts...' :
     nftLoading ? 'Loading NFT data...' : ''
 
-  // Show enhanced loader with a delay to allow for quick loads
+  // Show loader with a delay to avoid flashing for very quick loads
   useEffect(() => {
     if (isLoading) {
       const timer = setTimeout(() => {
@@ -51,35 +45,14 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isLoading])
 
-  // Handle enhanced loader completion
-  const handleLoaderComplete = () => {
-    setShowLoader(false)
-  }
-
   if (showLoader || isLoading) {
-    // Use enhanced loader if enabled, otherwise fall back to simple loader
-    if (useEnhancedLoader) {
-      return (
-        <EnhancedBradleyAILoader
-          isVisible={showLoader}
-          onComplete={handleLoaderComplete}
-          enableAudio={false} // Disabled by default for user preference
-          enableParticles={true}
-          enableDigitalRain={true}
-          performanceMode="auto"
-        />
-      )
-    } else {
-      return <LoadingScreen />
-    }
+    return <LoadingScreen />
   }
 
   return (
     <LoadingContext.Provider value={{
       isLoading,
-      loadingMessage,
-      useEnhancedLoader,
-      setUseEnhancedLoader
+      loadingMessage
     }}>
       {children}
     </LoadingContext.Provider>

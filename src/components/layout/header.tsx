@@ -1,11 +1,12 @@
 "use client";
 
-import { useAuth } from "@/lib/providers/auth-provider";
 import { Button } from "@/components/ui/button";
+import { WalletConnection } from "@/components/wallet-connection";
+import { useAuth } from "@/lib/providers/auth-provider";
 import { LogOut } from "lucide-react";
 
 export function Header() {
-  const { user, logout, connectWallet } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -26,12 +27,10 @@ export function Header() {
               </Button>
             </>
           ) : (
-            <Button onClick={() => connectWallet()} className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-full px-6">
-              Connect Wallet
-            </Button>
+            <WalletConnection compact />
           )}
         </div>
       </div>
     </header>
   );
-} 
+}

@@ -1,12 +1,12 @@
 "use client";
 
-import { MobileNavbar } from "@/components/dashboard/mobile-navbar";
 import { Container } from "@/components/ui/container";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { usePathname } from 'next/navigation';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Header } from "./header";
+import { MobileNavbar } from "./mobile-navbar";
 import { UnifiedSidebar } from "./unified-sidebar";
 
 function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
@@ -55,7 +55,7 @@ export function UnifiedLayout({
     '/',                    // Root path now uses dashboard layout
     '/dashboard',
     '/dashboard/portfolio',
-    '/v0-dashboard',
+    '/',
     '/dashboard/nfts',
     '/dashboard/contracts',
     '/dashboard/settings'
@@ -160,4 +160,4 @@ export function UnifiedLayout({
       )}
     </div>
   );
-} 
+}

@@ -34,9 +34,7 @@
         "./lib/*"
       ]
     },
-    "allowJs": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "suppressExcessPropertyErrors": true
+    "allowJs": true
   },
   "include": [
     "next-env.d.ts",

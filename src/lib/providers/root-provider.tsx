@@ -80,7 +80,7 @@ export const RootProvider = ({ children }: { children: React.ReactNode }) => {
         defaultOptions: {
           queries: {
             staleTime: 1000 * 60, // Data stays fresh for 1 minute
-            cacheTime: 1000 * 60 * 5, // Cache persists for 5 minutes
+            gcTime: 1000 * 60 * 5, // Cache persists for 5 minutes
             refetchOnWindowFocus: false, // Don't refetch on window focus
             retry: (failureCount, error) => {
               // Enhanced retry logic based on error type

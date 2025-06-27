@@ -365,7 +365,7 @@ export function EnhancedPortfolioProvider({ children }: { children: React.ReactN
 
     // Enhanced query configuration
     staleTime: ProductionConfig.cache.strategies.portfolio.ttl,
-    cacheTime: ProductionConfig.cache.strategies.portfolio.ttl * 5,
+    gcTime: ProductionConfig.cache.strategies.portfolio.ttl * 5,
     retry: createRetryLogic(),
     retryDelay: createRetryDelay(),
     refetchInterval: isMounted ? ProductionConfig.cache.strategies.portfolio.ttl : false,

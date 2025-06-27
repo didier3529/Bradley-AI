@@ -330,7 +330,7 @@ export function PortfolioProvider({ children }: { children: React.ReactNode }) {
     },
     // Enhanced query configuration with production settings
     staleTime: ProductionConfig.cache.strategies.portfolio.ttl,
-    cacheTime: ProductionConfig.cache.strategies.portfolio.ttl * 5,
+    gcTime: ProductionConfig.cache.strategies.portfolio.ttl * 5,
     retry: (failureCount, error) => {
       // Smart retry logic based on error type
       if (error instanceof Error) {
@@ -480,7 +480,7 @@ export function usePortfolioTokens(network?: string) {
     queryKey: ["portfolio", "tokens", network],
     queryFn: () => fetchPortfolioTokens(network),
     staleTime: POLLING_INTERVAL,
-    cacheTime: POLLING_INTERVAL * 5,
+    gcTime: POLLING_INTERVAL * 5,
     retry: (failureCount, error) => {
       if (error instanceof Error) {
         if (error.name === 'AbortError' ||

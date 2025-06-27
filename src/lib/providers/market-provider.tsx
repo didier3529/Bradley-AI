@@ -1,11 +1,11 @@
 "use client"
 
-import React, { createContext, useContext, useCallback, useMemo, useEffect, useState } from "react"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query";
+import React, { createContext, useCallback, useContext, useEffect, useMemo } from "react";
 // import axios from "axios"
 // import { MarketData as ApiMarketData } from "@/types/blockchain"
 // import { marketDataAdapter } from "@/lib/services/market-data-adapter"
-import { usePriceContext, TokenPrice } from "./price-provider" // Import context from PriceProvider
+import { TokenPrice, usePriceContext } from "./price-provider"; // Import context from PriceProvider
 
 // Define proper types for market data
 interface MarketData {
@@ -60,10 +60,10 @@ const SUPPORTED_TOKENS_FOR_AGGREGATION = ["BTC", "ETH", "USDC", "SOL", "ADA", "D
 export function MarketProvider({ children }: { children: React.ReactNode }) {
   // Consume the PriceProvider context to get underlying token prices
   const {
-    prices: tokenPrices, 
-    isLoading: pricesLoading, 
-    error: pricesError, 
-    isWebSocketConnected, 
+    prices: tokenPrices,
+    isLoading: pricesLoading,
+    error: pricesError,
+    isWebSocketConnected,
     subscribeToPrices // Needed to ensure tokens are subscribed
   } = usePriceContext()
 
@@ -117,19 +117,19 @@ export function MarketProvider({ children }: { children: React.ReactNode }) {
 
   // Use query hook primarily for caching the calculated result and providing a refetch mechanism.
   // The calculation itself is driven by the input tokenPrices.
-  const { 
-    data: aggregateMarketData, 
+  const {
+    data: aggregateMarketData,
     isLoading: calculationIsLoading, // Reflects calculation time, not fetching
-    error: calculationError, 
-    refetch 
+    error: calculationError,
+    refetch
   } = useQuery({
     // Query key now depends on the actual prices to trigger recalculation
-    // Note: Stringifying a large prices object might be inefficient. 
+    // Note: Stringifying a large prices object might be inefficient.
     // Consider a more stable key derived from timestamps or a simple counter if performance is an issue.
     queryKey: [...AGGREGATE_MARKET_DATA_KEY, JSON.stringify(tokenPrices)],
     queryFn: calculateAggregateData,
     staleTime: 5000, // Recalculated data is fresh for a short time
-    cacheTime: 60000, // Cache the result for a minute
+    gcTime: 60000, // Cache the result for a minute
     enabled: !pricesLoading, // Only calculate when underlying prices are not loading
   })
 
@@ -140,7 +140,7 @@ export function MarketProvider({ children }: { children: React.ReactNode }) {
     () => ({
       marketData: aggregateMarketData || FALLBACK_MARKET_DATA,
       // Loading is true if underlying prices are loading OR calculation is running
-      isLoading: pricesLoading || calculationIsLoading, 
+      isLoading: pricesLoading || calculationIsLoading,
       error: pricesError || calculationError, // Combine errors
       refetch, // Expose refetch to manually trigger recalculation
       isWebSocketConnected // Pass through from PriceProvider
@@ -172,4 +172,4 @@ export function useMarket() {
 // Add the correctly named hook for compatibility
 export function useMarketContext() {
   return useMarket();
-} 
+}

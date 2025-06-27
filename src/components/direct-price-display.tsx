@@ -4,7 +4,7 @@ import { HydrationSafe, useHydration } from '@/components/ui/hydration-safe';
 import { PriceFetcher } from '@/lib/services/price-fetcher';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { TrendingUp, Zap } from 'lucide-react';
+import { RefreshCw, TrendingUp, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 // The symbols we want to display
@@ -199,48 +199,52 @@ function PriceDisplayContent() {
       const priceFetcher = PriceFetcher.getInstance();
       priceFetcher.stopPolling();
     };
-  }, []);
+  }, [loading]);
 
-  // Format functions matching V0 style
   const formatPrice = (price: number): string => {
-    if (price === 0) return '$0.00';
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: price < 1 ? 4 : 2
-    }).format(price);
-  };
-
-  const formatLargeNumber = (value: number): string => {
-    if (value >= 1000000000000) {
-      return `$${(value / 1000000000000).toFixed(2)}T`;
-    } else if (value >= 1000000000) {
-      return `$${(value / 1000000000).toFixed(2)}B`;
-    } else if (value >= 1000000) {
-      return `$${(value / 1000000).toFixed(2)}M`;
-    } else if (value >= 1000) {
-      return `$${(value / 1000).toFixed(2)}K`;
+    if (price >= 1000) {
+      return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } else if (price >= 1) {
+      return `$${price.toFixed(4)}`;
     } else {
-      return `$${value.toFixed(2)}`;
+      return `$${price.toFixed(6)}`;
     }
   };
 
+  const formatLargeNumber = (value: number): string => {
+    if (value >= 1e12) {
+      return `$${(value / 1e12).toFixed(2)}T`;
+    } else if (value >= 1e9) {
+      return `$${(value / 1e9).toFixed(1)}B`;
+    } else if (value >= 1e6) {
+      return `$${(value / 1e6).toFixed(1)}M`;
+    } else if (value >= 1e3) {
+      return `$${(value / 1e3).toFixed(1)}K`;
+    }
+    return `$${value.toFixed(2)}`;
+  };
+
   const getSentimentColor = (sentiment: string) => {
-    if (sentiment === 'Very Bullish') return 'from-emerald-400 via-green-400 to-lime-300'
-    if (sentiment === 'Bullish') return 'from-green-400 via-emerald-400 to-teal-300'
-    if (sentiment === 'Bearish') return 'from-orange-400 via-yellow-400 to-amber-300'
-    if (sentiment === 'Very Bearish') return 'from-red-400 via-pink-400 to-rose-300'
-    return 'from-gray-400 via-slate-400 to-zinc-300'
-  }
+    switch (sentiment) {
+      case 'Very Bullish': return 'from-emerald-400 via-green-400 to-lime-300';
+      case 'Bullish': return 'from-green-400 via-emerald-400 to-teal-300';
+      case 'Bearish': return 'from-orange-400 via-yellow-400 to-amber-300';
+      case 'Very Bearish': return 'from-red-400 via-rose-400 to-pink-300';
+      default: return 'from-gray-400 via-slate-400 to-gray-300';
+    }
+  };
 
   const getSentimentGlow = (sentiment: string) => {
-    if (sentiment === 'Very Bullish') return 'shadow-[0_0_15px_rgba(34,197,94,0.6)]'
-    if (sentiment === 'Bullish') return 'shadow-[0_0_12px_rgba(34,197,94,0.4)]'
-    if (sentiment === 'Bearish') return 'shadow-[0_0_12px_rgba(251,146,60,0.4)]'
-    if (sentiment === 'Very Bearish') return 'shadow-[0_0_15px_rgba(239,68,68,0.4)]'
-    return 'shadow-[0_0_8px_rgba(148,163,184,0.3)]'
-  }
+    switch (sentiment) {
+      case 'Very Bullish': return 'shadow-[0_0_15px_rgba(34,197,94,0.6)]';
+      case 'Bullish': return 'shadow-[0_0_12px_rgba(34,197,94,0.4)]';
+      case 'Bearish': return 'shadow-[0_0_12px_rgba(251,146,60,0.4)]';
+      case 'Very Bearish': return 'shadow-[0_0_15px_rgba(239,68,68,0.6)]';
+      default: return 'shadow-[0_0_8px_rgba(148,163,184,0.3)]';
+    }
+  };
+
+
 
   return (
     <motion.div
@@ -280,9 +284,17 @@ function PriceDisplayContent() {
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/50"></div>
-            <span className="text-xs font-mono text-yellow-400 uppercase tracking-wider drop-shadow-sm">LOADING</span>
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+            <span className="text-xs font-mono text-green-400 uppercase tracking-wider drop-shadow-sm">LIVE</span>
           </div>
+          <button
+            onClick={refetch}
+            disabled={loading}
+            className="p-2 rounded-lg bg-slate-800/60 border border-slate-700/50 hover:bg-slate-700/60 transition-colors disabled:opacity-50"
+            title="Refresh market data"
+          >
+            <RefreshCw className={`h-4 w-4 text-cyan-400 ${loading ? 'animate-spin' : ''}`} />
+          </button>
         </div>
       </div>
 

@@ -2,8 +2,69 @@
 
 import { WalletConnection } from '@/components/wallet-connection'
 import { motion } from 'framer-motion'
+import { Activity, Wifi, WifiOff } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 export function BradleyAIHeader() {
+    const [currentTime, setCurrentTime] = useState('')
+    const [isMounted, setIsMounted] = useState(false)
+    const [isOnline, setIsOnline] = useState(true)
+
+    // Hydration safety
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    // Update time every second
+    useEffect(() => {
+        if (!isMounted) return
+
+        const updateTime = () => {
+            const now = new Date()
+            setCurrentTime(now.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }))
+        }
+
+        updateTime()
+        const interval = setInterval(updateTime, 1000)
+
+        return () => clearInterval(interval)
+    }, [isMounted])
+
+    // Monitor online status
+    useEffect(() => {
+        if (!isMounted) return
+
+        const handleOnline = () => setIsOnline(true)
+        const handleOffline = () => setIsOnline(false)
+
+        setIsOnline(navigator.onLine)
+        window.addEventListener('online', handleOnline)
+        window.addEventListener('offline', handleOffline)
+
+        return () => {
+            window.removeEventListener('online', handleOnline)
+            window.removeEventListener('offline', handleOffline)
+        }
+    }, [isMounted])
+
+    if (!isMounted) {
+        return (
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center space-x-4">
+                    <div className="h-12 w-32 bg-slate-800 rounded animate-pulse"></div>
+                </div>
+                <div className="flex items-center space-x-6">
+                    <div className="h-8 w-24 bg-slate-800 rounded animate-pulse"></div>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -11,52 +72,70 @@ export function BradleyAIHeader() {
             transition={{ duration: 0.6 }}
             className="flex items-center justify-between mb-8"
         >
-            {/* Bradley AI Logo and Branding */}
-            <div className="flex items-center space-x-4">
-                {/* Bradley AI Avatar */}
+            {/* Left side - Logo and Title */}
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="flex items-center space-x-4"
+            >
                 <div className="relative">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 p-1">
-                        <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center overflow-hidden">
-                            <img
-                                src="/bradley-logo.png"
-                                alt="Bradley AI"
-                                className="w-12 h-12 rounded-full object-cover"
-                            />
-                        </div>
+                    <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/25">
+                        <span className="text-xl font-bold text-white">B</span>
                     </div>
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-slate-900 animate-pulse"></div>
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
                 </div>
-
-                {/* Bradley AI Title */}
                 <div>
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2, duration: 0.6 }}
-                        className="text-white"
-                    >
-                        <h1 className="text-4xl font-bold tracking-tight">
-                            BRADLEY AI
-                        </h1>
-                    </motion.div>
-                    <motion.p
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3, duration: 0.6 }}
-                        className="text-sm text-slate-400 mt-1"
-                    >
-                        Advanced Cryptocurrency Intelligence Platform
-                    </motion.p>
+                    <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                        BRADLEY AI
+                    </h1>
+                    <div className="flex items-center space-x-2 text-sm text-gray-400">
+                        <Activity className="h-3 w-3 text-green-400 animate-pulse" />
+                        <span className="font-mono">NEURAL NETWORK ACTIVE</span>
+                    </div>
                 </div>
-            </div>
+            </motion.div>
 
-            {/* Connection Status and Wallet */}
+            {/* Right side - Status indicators and controls */}
             <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="flex items-center space-x-6"
             >
+                {/* Network Status */}
+                <div className="text-right">
+                    <div className="text-xs font-mono text-gray-400 uppercase tracking-wider">
+                        NETWORK STATUS
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        {isOnline ? (
+                            <>
+                                <Wifi className="w-4 h-4 text-green-400" />
+                                <span className="text-sm font-mono text-green-400">CONNECTED</span>
+                            </>
+                        ) : (
+                            <>
+                                <WifiOff className="w-4 h-4 text-red-400" />
+                                <span className="text-sm font-mono text-red-400">OFFLINE</span>
+                            </>
+                        )}
+                    </div>
+                </div>
+
+                {/* Live Time */}
+                <div className="text-right">
+                    <div className="text-xs font-mono text-gray-400 uppercase tracking-wider">
+                        SYSTEM TIME
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+                        <span className="text-sm font-mono text-cyan-400 tabular-nums">
+                            {currentTime || '00:00:00'}
+                        </span>
+                    </div>
+                </div>
+
                 {/* Wallet Connection Button */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}

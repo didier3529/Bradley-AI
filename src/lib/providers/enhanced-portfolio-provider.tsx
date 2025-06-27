@@ -14,7 +14,7 @@
 
 import { ApiConfig, CircuitBreakerConfig, ProductionConfig } from "@/config/production-config"
 import { CircuitBreaker, circuitBreakerManager } from "@/lib/circuit-breaker"
-import { healthMonitor, logger, metrics, useObservability } from "@/lib/observability"
+import { logger, metrics, useObservability } from "@/lib/observability"
 import type { PortfolioSummary } from "@/types/blockchain"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
@@ -371,23 +371,7 @@ export function EnhancedPortfolioProvider({ children }: { children: React.ReactN
     refetchInterval: isMounted ? ProductionConfig.cache.strategies.portfolio.ttl : false,
     refetchOnWindowFocus: false,
     enabled: isMounted,
-
-    onError: (error) => {
-      log('error', `Portfolio query failed: ${error instanceof Error ? error.message : String(error)}`, 'query-error')
-
-      // Check if we're using fallback data
-      if (circuitBreakerRef.current?.getState() === 'OPEN') {
-        setIsUsingFallback(true)
-      }
-    },
-
-    onSuccess: (data) => {
-      log('info', 'Portfolio query succeeded', 'query-success', {
-        tokenCount: data.tokens?.length || 0,
-        totalValue: data.metrics?.totalValue || 0,
-      })
-      healthMonitor.update(SERVICE_NAME, 'healthy')
-    },
+    // onError and onSuccess are deprecated in React Query v5
   })
 
   // Update portfolio data function

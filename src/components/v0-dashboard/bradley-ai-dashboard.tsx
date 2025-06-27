@@ -171,6 +171,15 @@ export function BradleyAIDashboard() {
                         >
                             <NFTMarketAnalysis />
                         </motion.div>
+
+                        {/* Bradley Gem Scanner Section */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.6 }}
+                        >
+                            <BradleyGemScanner />
+                        </motion.div>
                     </div>
 
                     {/* Right Column - 1/4 width */}

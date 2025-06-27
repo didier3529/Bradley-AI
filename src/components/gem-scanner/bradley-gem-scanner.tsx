@@ -352,3 +352,6 @@ export function BradleyGemScanner() {
     </Card>
   )
 }
+
+// Add default export for compatibility
+export default BradleyGemScanner

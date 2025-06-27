@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 // Import new v0-specific components that use the existing backend
 import DirectPriceDisplay from '@/components/direct-price-display'
+import { BradleyGemScanner } from '@/components/gem-scanner/bradley-gem-scanner'
 import { SimpleLoading } from '@/components/ui/simple-loading'
 import { BradleyAIHeader } from './bradley-ai-header'
 import { BradleyAIStatsCards } from './bradley-ai-stats-cards'

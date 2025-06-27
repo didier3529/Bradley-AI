@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 // Import new v0-specific components that use the existing backend
 import DirectPriceDisplay from '@/components/direct-price-display'
+import { BradleyGemScanner } from '@/components/gem-scanner/bradley-gem-scanner'
 import { SimpleLoading } from '@/components/ui/simple-loading'
 import { BradleyAIHeader } from './bradley-ai-header'
 import { BradleyAIStatsCards } from './bradley-ai-stats-cards'
@@ -173,7 +174,13 @@ export function BradleyAIDashboard() {
                         </motion.div>
 
                         {/* Bradley Gem Scanner Section */}
-                        <BradleyGemScannerSimple />
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.6 }}
+                        >
+                            <BradleyGemScanner />
+                        </motion.div>
                     </div>
 
                     {/* Right Column - 1/4 width */}

@@ -8,6 +8,7 @@
  * - Performance monitoring and adaptive optimization
  */
 
+import React, { useCallback, useState } from 'react'
 import { ColdStartConfig, ProductionConfig } from "@/config/production-config"
 import { healthMonitor, logger, metrics } from "@/lib/observability"
 
@@ -577,9 +578,9 @@ export const coldStartOptimizer = new ColdStartOptimizer()
 
 // React hook for cold start optimization
 export function useColdStartOptimization() {
-  const [isOptimizing, setIsOptimizing] = React.useState(false)
-  const [metrics, setMetrics] = React.useState<ColdStartMetrics | null>(null)
-  const [loadingStates, setLoadingStates] = React.useState<Map<string, LoadingState>>(new Map())
+  const [isOptimizing, setIsOptimizing] = useState(false)
+  const [metrics, setMetrics] = useState<ColdStartMetrics | null>(null)
+  const [loadingStates, setLoadingStates] = useState<Map<string, LoadingState>>(new Map())
 
   const startOptimization = useCallback(async () => {
     setIsOptimizing(true)

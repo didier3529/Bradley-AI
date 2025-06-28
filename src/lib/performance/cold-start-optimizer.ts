@@ -8,7 +8,6 @@
  * - Performance monitoring and adaptive optimization
  */
 
-import React, { useCallback, useState } from 'react'
 import { ColdStartConfig, ProductionConfig } from "@/config/production-config"
 import { healthMonitor, logger, metrics } from "@/lib/observability"
 
@@ -22,7 +21,7 @@ interface ServiceDefinition {
   timeout: number
 }
 
-interface LoadingState {
+export interface LoadingState {
   serviceName: string
   status: 'pending' | 'loading' | 'loaded' | 'failed' | 'fallback'
   startTime: number
@@ -32,7 +31,7 @@ interface LoadingState {
   retryCount: number
 }
 
-interface ColdStartMetrics {
+export interface ColdStartMetrics {
   totalStartTime: number
   criticalServicesLoaded: number
   totalServicesLoaded: number
@@ -575,35 +574,3 @@ export class ColdStartOptimizer {
 
 // Global cold start optimizer instance
 export const coldStartOptimizer = new ColdStartOptimizer()
-
-// React hook for cold start optimization
-export function useColdStartOptimization() {
-  const [isOptimizing, setIsOptimizing] = useState(false)
-  const [metrics, setMetrics] = useState<ColdStartMetrics | null>(null)
-  const [loadingStates, setLoadingStates] = useState<Map<string, LoadingState>>(new Map())
-
-  const startOptimization = useCallback(async () => {
-    setIsOptimizing(true)
-    try {
-      const result = await coldStartOptimizer.startOptimization()
-      setMetrics(result)
-      setLoadingStates(coldStartOptimizer.getLoadingStates())
-    } finally {
-      setIsOptimizing(false)
-    }
-  }, [])
-
-  const retryFailedServices = useCallback(async () => {
-    await coldStartOptimizer.retryFailedServices()
-    setLoadingStates(coldStartOptimizer.getLoadingStates())
-  }, [])
-
-  return {
-    isOptimizing,
-    metrics,
-    loadingStates,
-    startOptimization,
-    retryFailedServices,
-    isServiceLoaded: coldStartOptimizer.isServiceLoaded.bind(coldStartOptimizer),
-  }
-}

@@ -374,7 +374,7 @@ export const BradleyGemScanner: React.FC = () => {
                             )} backdrop-blur-sm`}
                           >
                             <div className="text-xs font-mono text-white/60 leading-none">
-                              AI
+                              SCORE
                             </div>
                             <div
                               className={`text-xl font-mono font-black ${getAIScoreColor(

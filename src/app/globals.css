@@ -10,61 +10,64 @@
     --content-max-width: 1440px;
     --content-padding: 2rem;
     --section-spacing: 2rem;
-    
+
     /* Spacing System */
-    --space-1: 0.25rem;  /* 4px */
-    --space-2: 0.5rem;   /* 8px */
-    --space-3: 0.75rem;  /* 12px */
-    --space-4: 1rem;     /* 16px */
-    --space-5: 1.25rem;  /* 20px */
-    --space-6: 1.5rem;   /* 24px */
-    --space-8: 2rem;     /* 32px */
-    --space-10: 2.5rem;  /* 40px */
-    --space-12: 3rem;    /* 48px */
-    
-    /* Dark theme colors by default */
-    --background: 240 10% 3.9%;
+    --space-1: 0.25rem; /* 4px */
+    --space-2: 0.5rem; /* 8px */
+    --space-3: 0.75rem; /* 12px */
+    --space-4: 1rem; /* 16px */
+    --space-5: 1.25rem; /* 20px */
+    --space-6: 1.5rem; /* 24px */
+    --space-8: 2rem; /* 32px */
+    --space-10: 2.5rem; /* 40px */
+    --space-12: 3rem; /* 48px */
+
+    /* New UI System - Modern Clean Interface */
+    --background: 26 26 26; /* #1a1a1a */
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 42 42 42; /* #2a2a2a */
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 42 42 42; /* #2a2a2a */
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
     --primary-foreground: 0 0% 9%;
-    --secondary: 240 5% 14.9%;
+    --secondary: 46 46 46; /* #2e2e2e */
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 5% 14.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 5% 14.9%;
+    --muted: 107 114 128; /* #6b7280 neutral-500 */
+    --muted-foreground: 156 163 175; /* #9ca3af neutral-400 */
+    --accent: 255 107 0; /* #ff6b00 orange accent */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5% 14.9%;
-    --input: 240 5% 14.9%;
-    --ring: 240 5% 83.1%;
-    
+    --border: 96 96 96; /* #606060 */
+    --input: 42 42 42; /* #2a2a2a */
+    --ring: 255 107 0; /* #ff6b00 orange */
+
     /* Chart colors - dark theme */
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    
-    /* Sidebar colors - dark theme */
-    --sidebar-background: 240 10% 3.9%;
+
+    /* Sidebar colors - new UI system */
+    --sidebar-background: 26 26 26; /* #1a1a1a */
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 217.2 91.2% 59.8%;
+    --sidebar-primary: 255 107 0; /* #ff6b00 orange */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 5% 14.9%;
+    --sidebar-accent: 42 42 42; /* #2a2a2a */
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 5% 14.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-border: 96 96 96; /* #606060 */
+    --sidebar-ring: 255 107 0; /* #ff6b00 orange */
 
     /* Shadows - dark theme */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4),
+      0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5),
+      0 4px 6px -4px rgb(0 0 0 / 0.5);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5),
+      0 8px 10px -6px rgb(0 0 0 / 0.5);
 
     /* Radii */
     --radius: 0.5rem;
@@ -79,7 +82,12 @@
     --z-toast: 70;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, #3a1c71 0%, #d76d77 50%, #ffaf7b 100%);
+    --gradient-primary: linear-gradient(
+      135deg,
+      #3a1c71 0%,
+      #d76d77 50%,
+      #ffaf7b 100%
+    );
     --gradient-secondary: linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%);
     --gradient-accent: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
   }
@@ -200,17 +208,17 @@
   }
 
   .form-input {
-    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm 
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm
            ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium
-           placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 
+           placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2
            focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50
            dark:border-border/40 dark:focus-visible:ring-ring/40;
   }
 
   /* Button variants */
   .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background 
-           transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background
+           transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
            focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
   }
 
@@ -234,7 +242,11 @@
 @layer utilities {
   .bg-grid-white\/10 {
     background-size: 40px 40px;
-    background-image: linear-gradient(to right, rgb(255 255 255 / 0.1) 1px, transparent 1px),
+    background-image: linear-gradient(
+        to right,
+        rgb(255 255 255 / 0.1) 1px,
+        transparent 1px
+      ),
       linear-gradient(to bottom, rgb(255 255 255 / 0.1) 1px, transparent 1px);
     background-position: top center;
   }
@@ -265,7 +277,8 @@
   }
 
   @keyframes pulse-glow {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
@@ -367,7 +380,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -394,4 +408,4 @@
 
 .content-container {
   @apply max-w-[var(--content-max-width)] mx-auto px-[var(--spacing-lg)];
-} 
+}

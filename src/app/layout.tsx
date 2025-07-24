@@ -1,34 +1,29 @@
-import MatrixRain from "@/components/effects/matrix-rain"
-import { ThemeProvider } from "@/components/theme-provider"
-import { RootProvider } from "@/lib/providers/root-provider"
-import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider";
+import { RootProvider } from "@/lib/providers/root-provider";
+import type { Metadata } from "next";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "MEXMA AI - Crypto Intelligence",
+  description: "AI-powered blockchain analytics platform for market insights, portfolio management, and smart contract security analysis.",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <title>Bradley AI</title>
-        <meta
-          name="description"
-          content="AI-powered blockchain analytics platform for market insights, portfolio management, and smart contract security analysis."
-        />
         <link rel="icon" href="/bradley-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/bradley-logo.png" />
         <link rel="shortcut icon" href="/bradley-logo.png" type="image/png" />
       </head>
-      <body className="min-h-screen bg-black font-sans antialiased" suppressHydrationWarning>
-        {/* Matrix Digital Rain Background */}
-        <MatrixRain
-          intensity="medium"
-          speed="medium"
-          enableGlow={true}
-          enableFlicker={true}
-        />
-
+      <body
+        className="bg-[#1a1a1a] text-white font-mono antialiased"
+        suppressHydrationWarning
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -36,11 +31,9 @@ export default function RootLayout({
           disableTransitionOnChange
           storageKey="bradley-ai-theme"
         >
-          <RootProvider>
-            {children}
-          </RootProvider>
+          <RootProvider>{children}</RootProvider>
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

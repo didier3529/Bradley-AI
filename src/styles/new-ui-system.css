@@ -1,0 +1,413 @@
+/* Bradley AI - New UI Design System */
+/* Version 2.0 - Modern Clean Interface */
+
+:root {
+  /* New UI System Colors */
+  --ui-background-primary: #1a1a1a;
+  --ui-background-secondary: #2a2a2a;
+  --ui-background-accent: #2e2e2e;
+  --ui-border-primary: #606060;
+  --ui-border-secondary: #404040;
+  --ui-text-primary: #ffffff;
+  --ui-text-secondary: #9ca3af;
+  --ui-text-muted: #6b7280;
+  --ui-accent-primary: #ff6b00;
+  --ui-accent-hover: #ff8533;
+  --ui-accent-success: #10b981;
+  --ui-accent-warning: #f59e0b;
+  --ui-accent-danger: #ef4444;
+
+  /* Status Colors */
+  --ui-status-new: rgba(255, 255, 255, 0.2);
+  --ui-status-hot: rgba(255, 107, 0, 0.2);
+  --ui-status-low-risk: rgba(255, 255, 255, 0.2);
+  --ui-status-med-risk: rgba(255, 107, 0, 0.2);
+  --ui-status-high-risk: rgba(239, 68, 68, 0.2);
+
+  /* Border Colors with Opacity */
+  --ui-border-new: rgba(255, 255, 255, 0.4);
+  --ui-border-hot: rgba(255, 107, 0, 0.4);
+  --ui-border-low-risk: rgba(255, 255, 255, 0.4);
+  --ui-border-med-risk: rgba(255, 107, 0, 0.4);
+  --ui-border-high-risk: rgba(239, 68, 68, 0.4);
+}
+
+/* Card System */
+.ui-card {
+  background-color: var(--ui-background-secondary);
+  border: 1px solid var(--ui-border-primary);
+  border-radius: 8px;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  color: var(--ui-text-primary);
+}
+
+.ui-card:hover {
+  border-color: rgba(255, 107, 0, 0.5);
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.1);
+}
+
+.ui-card-header {
+  background-color: var(--ui-background-secondary);
+  border-bottom: 1px solid var(--ui-border-primary);
+  padding: 1.5rem;
+}
+
+.ui-card-content {
+  padding: 1.5rem;
+}
+
+.ui-card-footer {
+  background-color: var(--ui-background-secondary);
+  border-top: 1px solid var(--ui-border-primary);
+  padding: 1rem 1.5rem;
+}
+
+/* Badge System */
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid;
+  transition: all 0.2s ease-in-out;
+}
+
+.ui-badge-new {
+  background-color: var(--ui-status-new);
+  color: var(--ui-text-primary);
+  border-color: var(--ui-border-new);
+}
+
+.ui-badge-hot {
+  background-color: var(--ui-status-hot);
+  color: var(--ui-accent-primary);
+  border-color: var(--ui-border-hot);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.ui-badge-low-risk {
+  background-color: var(--ui-status-low-risk);
+  color: var(--ui-text-primary);
+  border-color: var(--ui-border-low-risk);
+}
+
+.ui-badge-med-risk {
+  background-color: var(--ui-status-med-risk);
+  color: var(--ui-accent-primary);
+  border-color: var(--ui-border-med-risk);
+}
+
+.ui-badge-high-risk {
+  background-color: var(--ui-status-high-risk);
+  color: var(--ui-accent-danger);
+  border-color: var(--ui-border-high-risk);
+}
+
+/* Button System */
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+
+.ui-button-primary {
+  background-color: var(--ui-accent-primary);
+  color: var(--ui-text-primary);
+}
+
+.ui-button-primary:hover {
+  background-color: var(--ui-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
+}
+
+.ui-button-secondary {
+  background-color: transparent;
+  color: var(--ui-text-secondary);
+  border: 1px solid var(--ui-border-primary);
+}
+
+.ui-button-secondary:hover {
+  background-color: var(--ui-background-accent);
+  color: var(--ui-text-primary);
+  border-color: var(--ui-accent-primary);
+}
+
+.ui-button-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.ui-button-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+/* Table System */
+.ui-table-container {
+  background-color: var(--ui-background-secondary);
+  border: 1px solid var(--ui-border-primary);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ui-table-header {
+  background-color: var(--ui-background-secondary);
+  border-bottom: 1px solid var(--ui-border-primary);
+  padding: 1rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ui-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+}
+
+.ui-table-row {
+  border-bottom: 1px solid var(--ui-border-secondary);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.ui-table-row:hover {
+  background-color: rgba(255, 107, 0, 0.05);
+}
+
+.ui-table-cell {
+  padding: 1rem 1.5rem;
+  color: var(--ui-text-primary);
+}
+
+/* AI Score Display */
+.ui-ai-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-weight: 900;
+  font-size: 1.125rem;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.ui-ai-score-90 {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+  border: 2px solid rgba(16, 185, 129, 0.5);
+  color: #10b981;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.ui-ai-score-80 {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.ui-ai-score-70 {
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.2), rgba(255, 107, 0, 0.1));
+  border: 2px solid rgba(255, 107, 0, 0.5);
+  color: var(--ui-accent-primary);
+  box-shadow: 0 0 15px rgba(255, 107, 0, 0.3);
+}
+
+.ui-ai-score-60 {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+  border: 2px solid rgba(239, 68, 68, 0.5);
+  color: var(--ui-accent-danger);
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+}
+
+/* Price Change Indicators */
+.ui-price-change {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.ui-price-change-positive {
+  color: var(--ui-accent-success);
+}
+
+.ui-price-change-negative {
+  color: var(--ui-accent-danger);
+}
+
+/* Input System */
+.ui-input {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--ui-background-secondary);
+  border: 1px solid var(--ui-border-primary);
+  border-radius: 6px;
+  color: var(--ui-text-primary);
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.ui-input:focus {
+  outline: none;
+  border-color: var(--ui-accent-primary);
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+}
+
+.ui-input::placeholder {
+  color: var(--ui-text-muted);
+}
+
+/* Loading States */
+.ui-loading-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--ui-background-secondary) 25%,
+    var(--ui-background-accent) 50%,
+    var(--ui-background-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.ui-spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--ui-border-primary);
+  border-top: 2px solid var(--ui-accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Status Indicators */
+.ui-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ui-status-live {
+  color: var(--ui-accent-success);
+}
+
+.ui-status-live::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: var(--ui-accent-success);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.ui-status-error {
+  color: var(--ui-accent-danger);
+}
+
+.ui-status-warning {
+  color: var(--ui-accent-warning);
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 107, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 107, 0, 0.6);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ui-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Utility Classes */
+.ui-text-primary { color: var(--ui-text-primary); }
+.ui-text-secondary { color: var(--ui-text-secondary); }
+.ui-text-muted { color: var(--ui-text-muted); }
+.ui-text-accent { color: var(--ui-accent-primary); }
+.ui-text-success { color: var(--ui-accent-success); }
+.ui-text-warning { color: var(--ui-accent-warning); }
+.ui-text-danger { color: var(--ui-accent-danger); }
+
+.ui-bg-primary { background-color: var(--ui-background-primary); }
+.ui-bg-secondary { background-color: var(--ui-background-secondary); }
+.ui-bg-accent { background-color: var(--ui-background-accent); }
+
+.ui-border-primary { border-color: var(--ui-border-primary); }
+.ui-border-secondary { border-color: var(--ui-border-secondary); }
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .ui-card {
+    border-radius: 6px;
+  }
+
+  .ui-card-header,
+  .ui-card-content,
+  .ui-card-footer {
+    padding: 1rem;
+  }
+
+  .ui-ai-score {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1rem;
+  }
+}

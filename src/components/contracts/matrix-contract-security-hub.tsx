@@ -36,7 +36,7 @@ export default function MatrixContractSecurityHub({
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [securityAlertCount, setSecurityAlertCount] = useState(3);
   const [showTour, setShowTour] = useState(showWelcomeTour);
-  
+
   const { currentTheme, dataState } = useMatrixEffects();
   const triggerPulse = useMatrixEffect('pulse');
   const triggerGlow = useMatrixEffect('glow');
@@ -70,14 +70,14 @@ export default function MatrixContractSecurityHub({
   // Handle contract address input
   const handleContractInput = (address: string) => {
     setContractAddress(address);
-    
+
     // Add to search history if valid
     if (address && address.length === 42 && address.startsWith('0x')) {
       setSearchHistory(prev => {
         const newHistory = [address, ...prev.filter(addr => addr !== address)].slice(0, 5);
         return newHistory;
       });
-      
+
       triggerPulse({ intensity: 0.6, duration: 200 });
     }
   };
@@ -126,7 +126,7 @@ export default function MatrixContractSecurityHub({
                   Your comprehensive platform for smart contract security analysis and monitoring
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 {tabs.map(tab => (
                   <div key={tab.id} className="text-center p-4 bg-gray-900/50 rounded border border-gray-600">
@@ -136,7 +136,7 @@ export default function MatrixContractSecurityHub({
                   </div>
                 ))}
               </div>
-              
+
               <div className="text-center">
                 <MatrixButton onClick={() => setShowTour(false)}>
                   Enter the Matrix
@@ -158,15 +158,15 @@ export default function MatrixContractSecurityHub({
               Advanced smart contract security analysis and monitoring platform
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <div className="text-sm font-mono text-gray-400">
               Status: <span className={dataState.errorState ? 'text-red-400' : 'text-green-400'}>
                 {dataState.errorState ? 'Error' : 'Online'}
               </span>
             </div>
-            <MatrixButton 
-              size="sm" 
+            <MatrixButton
+              size="sm"
               variant="secondary"
               onClick={() => setShowTour(true)}
             >
@@ -182,7 +182,7 @@ export default function MatrixContractSecurityHub({
           <h2 className="text-xl font-mono font-bold text-cyan-400">
             Contract Analysis Target
           </h2>
-          
+
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <label className="block text-sm font-mono text-gray-400 mb-2">
@@ -196,9 +196,9 @@ export default function MatrixContractSecurityHub({
                 className="w-full px-4 py-2 bg-black/50 border border-gray-600 rounded font-mono text-white placeholder-gray-500 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400/30"
               />
             </div>
-            
+
             <div className="flex items-end space-x-2">
-              <MatrixButton 
+              <MatrixButton
                 onClick={() => handleContractInput('0x1234567890123456789012345678901234567890')}
                 variant="secondary"
                 size="sm"
@@ -207,7 +207,7 @@ export default function MatrixContractSecurityHub({
               </MatrixButton>
             </div>
           </div>
-          
+
           {/* Search History */}
           {searchHistory.length > 0 && (
             <div>
@@ -273,7 +273,7 @@ export default function MatrixContractSecurityHub({
                 }}
               />
             )}
-            
+
             {activeTab === 'explorer' && (
               <MatrixContractExplorer
                 contractAddress={contractAddress}
@@ -285,7 +285,7 @@ export default function MatrixContractSecurityHub({
                 }}
               />
             )}
-            
+
             {activeTab === 'alerts' && (
               <MatrixSecurityAlerts
                 contractAddresses={contractAddress ? [contractAddress] : []}
@@ -328,4 +328,4 @@ export default function MatrixContractSecurityHub({
       </MatrixCard>
     </div>
   );
-} 
+}

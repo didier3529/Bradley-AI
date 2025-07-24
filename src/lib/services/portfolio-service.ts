@@ -1,34 +1,66 @@
-import type { PortfolioData } from "@/lib/hooks/use-portfolio"
-import { getTokenPrices } from "./price-service"
-import { getWalletBalances } from "./wallet-service"
-import { formatCurrency, formatPercentage } from "@/lib/utils"
+import type { PortfolioData } from "@/lib/hooks/use-portfolio";
+import { formatCurrency, formatPercentage } from "@/lib/utils";
+import marketDataAdapter from "./market-data-adapter";
+import { getWalletBalances } from "./wallet-service";
 
-export async function getPortfolioData(timeframe: "1d" | "1w" | "1m" | "1y"): Promise<PortfolioData> {
+// CONSOLIDATED: Use market-data-adapter directly instead of redundant price-service wrapper
+async function getTokenPrices(tokens: string[], timeframe: string) {
+  const result: Record<
+    string,
+    { name: string; current: number; historical: number }
+  > = {};
+
+  for (const symbol of tokens) {
+    try {
+      const marketPrice = await marketDataAdapter.getPrice(symbol);
+      result[symbol] = {
+        name: symbol,
+        current: marketPrice.current,
+        historical: marketPrice.historical,
+      };
+    } catch (error) {
+      console.error(`Failed to fetch price for ${symbol}:`, error);
+      result[symbol] = { name: symbol, current: 0, historical: 0 };
+    }
+  }
+
+  return result;
+}
+
+export async function getPortfolioData(
+  timeframe: "1d" | "1w" | "1m" | "1y"
+): Promise<PortfolioData> {
   try {
     // Get wallet balances
-    const balances = await getWalletBalances()
-    
+    const balances = await getWalletBalances();
+
     // Get token prices with historical data for the timeframe
-    const prices = await getTokenPrices(Object.keys(balances), timeframe)
-    
+    const prices = await getTokenPrices(Object.keys(balances), timeframe);
+
     // Calculate portfolio value and changes
-    let totalValue = 0
-    const assets = []
-    
+    let totalValue = 0;
+    const assets = [];
+
     for (const [token, balanceRaw] of Object.entries(balances)) {
       // Ensure balance is number
-      const balance = typeof balanceRaw === "number" ? balanceRaw : Number(balanceRaw)
-      const tokenPrice = prices[token]
+      const balance =
+        typeof balanceRaw === "number" ? balanceRaw : Number(balanceRaw);
+      const tokenPrice = prices[token];
       // Ensure tokenPrice.current is number
-      const priceCurrent = typeof tokenPrice.current === "number" ? tokenPrice.current : Number(tokenPrice.current)
-      const value = balance * priceCurrent
-      totalValue += value
-      
+      const priceCurrent =
+        typeof tokenPrice.current === "number"
+          ? tokenPrice.current
+          : Number(tokenPrice.current);
+      const value = balance * priceCurrent;
+      totalValue += value;
+
       const change = calculatePercentageChange(
-        typeof tokenPrice.historical === "number" ? tokenPrice.historical : Number(tokenPrice.historical),
+        typeof tokenPrice.historical === "number"
+          ? tokenPrice.historical
+          : Number(tokenPrice.historical),
         priceCurrent
-      )
-      
+      );
+
       assets.push({
         name: tokenPrice.name,
         symbol: token,
@@ -37,18 +69,18 @@ export async function getPortfolioData(timeframe: "1d" | "1w" | "1m" | "1y"): Pr
         price: formatCurrency(priceCurrent),
         change: formatPercentage(change),
         allocation: 0, // Will be calculated after total is known
-      })
+      });
     }
-    
+
     // Calculate allocations
     assets.forEach((asset) => {
-      const value = Number(asset.value.replace(/[$,]/g, ""))
-      asset.allocation = totalValue === 0 ? 0 : (value * 100) / totalValue
-    })
-    
+      const value = Number(asset.value.replace(/[$,]/g, ""));
+      asset.allocation = totalValue === 0 ? 0 : (value * 100) / totalValue;
+    });
+
     // Sort by allocation (descending)
-    assets.sort((a, b) => b.allocation - a.allocation)
-    
+    assets.sort((a, b) => b.allocation - a.allocation);
+
     return {
       totalValue: formatCurrency(totalValue),
       assets,
@@ -57,19 +89,19 @@ export async function getPortfolioData(timeframe: "1d" | "1w" | "1m" | "1y"): Pr
         week: "+5.7%",
         month: "-3.2%",
         year: "+124.5%",
-      }
-    }
+      },
+    };
   } catch (error) {
-    console.error("Portfolio Service Error:", error)
-    throw new Error("Failed to fetch portfolio data")
+    console.error("Portfolio Service Error:", error);
+    throw new Error("Failed to fetch portfolio data");
   }
 }
 
 // Helper functions
 function calculatePercentageChange(before: number, after: number): number {
   // Avoid division by zero
-  if (before === 0) return 0
-  
-  const change = ((after - before) * 10000) / before
-  return change / 100
-} 
+  if (before === 0) return 0;
+
+  const change = ((after - before) * 10000) / before;
+  return change / 100;
+}

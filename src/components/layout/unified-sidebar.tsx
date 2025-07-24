@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import { Logo } from "@/components/ui/logo"
-import { TooltipProvider } from "@/components/ui/tooltip"
-import { useAuth } from "@/lib/providers/auth-provider"
-import { cn } from "@/lib/utils"
+import { Logo } from "@/components/ui/logo";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { useAuth } from "@/lib/providers/auth-provider";
+import { cn } from "@/lib/utils";
 import {
-    BarChart3,
-    FileCode,
-    Gem,
-    LayoutDashboard,
-    LineChart,
-    LogOut,
-    Settings,
-    Zap
-} from "lucide-react"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+  BarChart3,
+  FileCode,
+  Gem,
+  LayoutDashboard,
+  LineChart,
+  LogOut,
+  Settings,
+  Zap,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface SidebarItemProps {
-  icon: React.ReactNode
-  label: string
-  href: string
-  description?: string
-  isActive: boolean
+  icon: React.ReactNode;
+  label: string;
+  href: string;
+  description?: string;
+  isActive: boolean;
 }
 
 const sidebarLinks = [
@@ -63,40 +63,45 @@ const sidebarLinks = [
     icon: Settings,
     description: "Account and application settings",
   },
-]
+];
 
-function SidebarItem({ icon, label, href, description, isActive }: SidebarItemProps) {
-  const pathname = usePathname()
+function SidebarItem({
+  icon,
+  label,
+  href,
+  description,
+  isActive,
+}: SidebarItemProps) {
+  const pathname = usePathname();
+  const router = useRouter();
 
   const handleNavigation = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
 
-    console.log(`🚀 NAVIGATION: ${label} -> ${href} (current: ${pathname})`)
+    console.log(`🚀 NAVIGATION: ${label} -> ${href} (current: ${pathname})`);
 
     // Multi-method navigation approach for 100% reliability
     try {
       // Method 1: Next.js router (preferred)
-      const router = useRouter()
-      router.push(href)
-      console.log(`✅ Next.js router navigation initiated to ${href}`)
+      router.push(href);
+      console.log(`✅ Next.js router navigation initiated to ${href}`);
 
       // Add a small delay to check if navigation worked
       setTimeout(() => {
         if (window.location.pathname === pathname) {
-          console.log(`⚠️ Router navigation may have failed, using fallback`)
-          window.location.href = href
+          console.log(`⚠️ Router navigation may have failed, using fallback`);
+          window.location.href = href;
         }
-      }, 100)
-
+      }, 100);
     } catch (error) {
-      console.warn(`⚠️ Next.js router failed:`, error)
+      console.warn(`⚠️ Next.js router failed:`, error);
 
       // Method 2: Direct window.location (most reliable fallback)
-      console.log(`🔄 Using window.location fallback for ${href}`)
-      window.location.href = href
+      console.log(`🔄 Using window.location fallback for ${href}`);
+      window.location.href = href;
     }
-  }
+  };
 
   return (
     <button
@@ -105,7 +110,7 @@ function SidebarItem({ icon, label, href, description, isActive }: SidebarItemPr
         "w-full flex items-center gap-3 px-3 py-3 rounded transition-all duration-200 cursor-pointer text-left border-0 bg-transparent focus:outline-none group relative overflow-hidden font-['Fira_Code']",
         isActive
           ? "bg-matrix-cyber-blue/20 text-matrix-cyber-blue border border-matrix-cyber-blue/40 shadow-cyber-glow"
-          : "text-matrix-cyber-blue/60 hover:text-matrix-cyber-blue hover:bg-matrix-cyber-blue/10 hover:border-matrix-cyber-blue/20 border border-transparent",
+          : "text-matrix-cyber-blue/60 hover:text-matrix-cyber-blue hover:bg-matrix-cyber-blue/10 hover:border-matrix-cyber-blue/20 border border-transparent"
       )}
       onClick={handleNavigation}
       aria-label={`Navigate to ${label}`}
@@ -113,10 +118,12 @@ function SidebarItem({ icon, label, href, description, isActive }: SidebarItemPr
       {/* Matrix background effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-matrix-cyber-blue/5 via-transparent to-matrix-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
 
-      <div className={cn(
-        "w-6 h-6 flex items-center justify-center relative z-10",
-        isActive && "text-matrix-cyber-blue"
-      )}>
+      <div
+        className={cn(
+          "w-6 h-6 flex items-center justify-center relative z-10",
+          isActive && "text-matrix-cyber-blue"
+        )}
+      >
         {icon}
       </div>
       <span className="relative z-10 text-sm font-medium">{label}</span>
@@ -138,32 +145,32 @@ function SidebarItem({ icon, label, href, description, isActive }: SidebarItemPr
         </>
       )}
     </button>
-  )
+  );
 }
 
 export function UnifiedSidebar() {
-  const pathname = usePathname()
-  const { logout } = useAuth()
-  const [isMobile, setIsMobile] = useState(false)
+  const pathname = usePathname();
+  const { logout } = useAuth();
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
-      const isMobileView = window.innerWidth < 768
-      setIsMobile(isMobileView)
-    }
+      const isMobileView = window.innerWidth < 768;
+      setIsMobile(isMobileView);
+    };
 
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
-  }, [])
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const handleLogout = async () => {
     try {
-      await logout()
+      await logout();
     } catch (error) {
-      console.error("Logout failed:", error)
+      console.error("Logout failed:", error);
     }
-  }
+  };
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -171,11 +178,14 @@ export function UnifiedSidebar() {
         {/* Matrix Background Elements */}
         <div className="absolute inset-0 pointer-events-none">
           {/* Subtle grid pattern */}
-          <div className="absolute inset-0 opacity-5" style={{
-            backgroundImage: `linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px),
+          <div
+            className="absolute inset-0 opacity-5"
+            style={{
+              backgroundImage: `linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px)`,
-            backgroundSize: '20px 20px'
-          }} />
+              backgroundSize: "20px 20px",
+            }}
+          />
 
           {/* Vertical accent lines */}
           <div className="absolute top-0 left-4 w-px h-full bg-gradient-to-b from-transparent via-matrix-cyber-blue/20 to-transparent" />
@@ -187,11 +197,7 @@ export function UnifiedSidebar() {
           <Link href="/dashboard" className="flex items-center overflow-hidden">
             <Logo size="medium" variant="bordered" singleLine={true} />
           </Link>
-          {/* Status indicator */}
-          <div className="ml-auto flex items-center gap-2">
-            <div className="w-2 h-2 bg-matrix-green rounded-full animate-pulse"></div>
-            <span className="text-xs matrix-text-cyber opacity-60 font-['Fira_Code']">ACTIVE</span>
-          </div>
+          {/* Status indicator removed */}
         </div>
 
         {/* Navigation */}
@@ -205,7 +211,9 @@ export function UnifiedSidebar() {
 
           <ul className="space-y-2">
             {sidebarLinks.map((link) => {
-              const isActive = pathname === link.href || (link.href !== "/dashboard" && pathname.startsWith(link.href))
+              const isActive =
+                pathname === link.href ||
+                (link.href !== "/dashboard" && pathname.startsWith(link.href));
               return (
                 <li key={link.href}>
                   <SidebarItem
@@ -216,7 +224,7 @@ export function UnifiedSidebar() {
                     isActive={isActive}
                   />
                 </li>
-              )
+              );
             })}
           </ul>
 
@@ -230,16 +238,28 @@ export function UnifiedSidebar() {
             </div>
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">
-                <span className="text-matrix-cyber-blue/60 font-['Fira_Code']">API_STATUS:</span>
-                <span className="text-matrix-green font-['Fira_Code']">ONLINE</span>
+                <span className="text-matrix-cyber-blue/60 font-['Fira_Code']">
+                  API_STATUS:
+                </span>
+                <span className="text-matrix-green font-['Fira_Code']">
+                  ONLINE
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-matrix-cyber-blue/60 font-['Fira_Code']">SECURITY:</span>
-                <span className="text-matrix-green font-['Fira_Code']">SECURED</span>
+                <span className="text-matrix-cyber-blue/60 font-['Fira_Code']">
+                  SECURITY:
+                </span>
+                <span className="text-matrix-green font-['Fira_Code']">
+                  SECURED
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-matrix-cyber-blue/60 font-['Fira_Code']">UPTIME:</span>
-                <span className="text-matrix-cyber-blue font-['Fira_Code']">99.9%</span>
+                <span className="text-matrix-cyber-blue/60 font-['Fira_Code']">
+                  UPTIME:
+                </span>
+                <span className="text-matrix-cyber-blue font-['Fira_Code']">
+                  99.9%
+                </span>
               </div>
             </div>
           </div>
@@ -258,5 +278,5 @@ export function UnifiedSidebar() {
         </div>
       </aside>
     </TooltipProvider>
-  )
+  );
 }

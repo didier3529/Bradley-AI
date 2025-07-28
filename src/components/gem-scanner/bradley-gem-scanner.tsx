@@ -246,9 +246,9 @@ export const BradleyGemScanner: React.FC = () => {
   };
 
   return (
-    <div className="relative overflow-hidden rounded-lg border border-neutral-600 bg-[#2a2a2a] shadow-2xl shadow-neutral-500/20 gem-scanner-container">
+    <div className="relative overflow-hidden rounded-lg border border-neutral-600 bg-[#1a1a1a] shadow-2xl shadow-neutral-500/20 gem-scanner-container">
       {/* Header */}
-      <div className="relative flex items-center justify-between p-6 border-b border-neutral-600 bg-[#2a2a2a]">
+      <div className="relative flex items-center justify-between p-6 border-b border-neutral-600 bg-[#1a1a1a]">
         <div className="flex items-center space-x-3">
           <div className="relative">
             <img
@@ -292,7 +292,7 @@ export const BradleyGemScanner: React.FC = () => {
       {/* Main content */}
       <div className="space-y-4">
         {/* Scanner Display */}
-        <div className="bg-[#2a2a2a] border border-neutral-600 rounded-lg p-4">
+        <div className="bg-[#1a1a1a] border border-neutral-600 rounded-lg p-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/30"></div>
@@ -340,7 +340,7 @@ export const BradleyGemScanner: React.FC = () => {
               filteredGems.map((gem, index) => (
                 <div
                   key={gem.address}
-                  className="bg-[#2a2a2a] border border-neutral-600 rounded-lg p-4 hover:border-neutral-500/50 transition-all duration-300 group gem-card-hover"
+                  className="bg-[#1a1a1a] border border-neutral-600 rounded-lg p-4 hover:border-neutral-500/50 transition-all duration-300 group gem-card-hover"
                   style={{
                     animationName: "fadeInUp",
                     animationDuration: "0.5s",
@@ -514,7 +514,7 @@ export const BradleyGemScanner: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="relative px-6 py-4 bg-[#2a2a2a] border-t border-neutral-600">
+        <div className="relative px-6 py-4 bg-[#1a1a1a] border-t border-neutral-600">
           <div className="text-center text-white text-xs font-mono">
             <div className="flex items-center justify-center gap-2 mb-2">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>

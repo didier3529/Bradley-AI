@@ -118,7 +118,7 @@ function WalletConnectionPrompt() {
   return (
     <div className="relative">
       <div className="absolute inset-0 bg-white/5 rounded-lg animate-pulse"></div>
-      <div className="relative text-center py-8 bg-[#2a2a2a] rounded-lg border border-neutral-600">
+      <div className="relative text-center py-8 bg-[#1a1a1a] rounded-lg border border-neutral-600">
         <div className="flex justify-center mb-4">
           <div className="relative">
             <Wallet className="h-12 w-12 text-white drop-shadow-lg" />
@@ -244,10 +244,10 @@ export function PortfolioHoldings() {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
-      className="relative overflow-hidden rounded-lg border border-neutral-600 bg-[#2a2a2a] shadow-2xl shadow-neutral-500/20"
+      className="relative overflow-hidden rounded-lg border border-neutral-600 bg-[#1a1a1a] shadow-2xl shadow-neutral-500/20"
     >
       {/* Header */}
-      <div className="relative flex items-center justify-between p-4 border-b border-neutral-600 bg-[#2a2a2a]">
+      <div className="relative flex items-center justify-between p-4 border-b border-neutral-600 bg-[#1a1a1a]">
         <div className="flex items-center space-x-2">
           <div className="relative">
             <img
@@ -370,7 +370,7 @@ export function PortfolioHoldings() {
 
       {/* Total Portfolio Value - Only show when connected */}
       {isConnected && (
-        <div className="relative px-4 py-3 bg-[#2a2a2a] border-t border-neutral-600">
+        <div className="relative px-4 py-3 bg-[#1a1a1a] border-t border-neutral-600">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Zap className="h-3 w-3 text-white" />

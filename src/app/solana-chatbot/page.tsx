@@ -159,16 +159,16 @@ export default function SolanaChatbotPage() {
   return (
     <div className="p-6 space-y-6 h-full flex flex-col">
       {/* Main Chat Container */}
-      <div className="relative overflow-hidden rounded-lg border border-neutral-600 bg-[#2a2a2a] shadow-2xl shadow-neutral-500/20 flex-1 flex flex-col">
+      <div className="relative overflow-hidden rounded-lg border border-neutral-600 bg-[#1a1a1a] shadow-2xl shadow-neutral-500/20 flex-1 flex flex-col">
         {/* Tabs */}
-        <div className="flex border-b border-neutral-600 bg-[#2a2a2a]">
+        <div className="flex border-b border-neutral-600 bg-[#1a1a1a]">
           {tabs.map((tab) => (
             <button
               key={tab.name}
               onClick={() => handleTabClick(tab.name)}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === tab.name
-                  ? "text-white bg-[#2a2a2a] border-b-2 border-orange-500"
+                  ? "text-white bg-[#1a1a1a] border-b-2 border-orange-500"
                   : "text-neutral-400 hover:text-neutral-300 hover:bg-neutral-700/50"
               }`}
             >
@@ -179,14 +179,14 @@ export default function SolanaChatbotPage() {
         </div>
 
         {/* Chat Interface Header */}
-        <div className="p-4 border-b border-neutral-600 bg-[#2a2a2a]">
+        <div className="p-4 border-b border-neutral-600 bg-[#1a1a1a]">
           <h2 className="text-sm font-mono font-bold text-white uppercase tracking-wide">
             CHAT INTERFACE
           </h2>
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#2a2a2a]">
+        <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#1a1a1a]">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -250,7 +250,7 @@ export default function SolanaChatbotPage() {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 border-t border-neutral-600 bg-[#2a2a2a]">
+        <div className="p-4 border-t border-neutral-600 bg-[#1a1a1a]">
           <div className="flex gap-2">
             <Input
               value={inputMessage}

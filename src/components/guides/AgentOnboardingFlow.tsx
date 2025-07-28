@@ -1,9 +1,15 @@
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
-import { AIAgentSelectionGuide } from './AIAgentSelectionGuide';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import React from "react";
+import { AIAgentSelectionGuide } from "./AIAgentSelectionGuide";
 
 interface AgentOnboardingFlowProps {
   onComplete: () => void;
@@ -11,13 +17,15 @@ interface AgentOnboardingFlowProps {
 
 const ONBOARDING_STEPS = [
   {
-    title: 'Welcome to BRADLEY AI',
-    description: 'Let\'s help you set up your AI agents for the best crypto analysis experience.',
+    title: "Welcome to BRADLEY",
+    description:
+      "Let's help you set up your agents for the best crypto analysis experience.",
     content: (
       <div className="space-y-4">
         <p className="text-muted-foreground">
-          BRADLEY AI uses specialized AI agents to help you make better decisions in the crypto market.
-          Each agent has unique capabilities, and they work even better together.
+          BRADLEY uses specialized agents to help you make better
+          decisions in the crypto market. Each agent has unique capabilities,
+          and they work even better together.
         </p>
         <div className="grid gap-4">
           <Card className="p-4">
@@ -31,16 +39,17 @@ const ONBOARDING_STEPS = [
           </Card>
         </div>
       </div>
-    )
+    ),
   },
   {
-    title: 'Choose Your AI Agents',
-    description: 'Select the agents that match your crypto strategy.',
-    content: null // Will be replaced with AIAgentSelectionGuide
+    title: "Choose Your AI Agents",
+    description: "Select the agents that match your crypto strategy.",
+    content: null, // Will be replaced with AIAgentSelectionGuide
   },
   {
-    title: 'Ready to Start',
-    description: 'Your AI agents are ready to help you analyze the crypto market.',
+    title: "Ready to Start",
+    description:
+      "Your AI agents are ready to help you analyze the crypto market.",
     content: (
       <div className="space-y-4">
         <p className="text-muted-foreground">
@@ -51,15 +60,17 @@ const ONBOARDING_STEPS = [
             <h4 className="font-semibold mb-2">Next steps:</h4>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
               <li>Your agents will start analyzing the market</li>
-              <li>You'll receive personalized insights based on your selection</li>
+              <li>
+                You'll receive personalized insights based on your selection
+              </li>
               <li>You can modify your agent selection anytime</li>
               <li>Check the Help Center for detailed guides on each agent</li>
             </ul>
           </Card>
         </div>
       </div>
-    )
-  }
+    ),
+  },
 ];
 
 export function AgentOnboardingFlow({ onComplete }: AgentOnboardingFlowProps) {
@@ -87,13 +98,13 @@ export function AgentOnboardingFlow({ onComplete }: AgentOnboardingFlowProps) {
   };
 
   const handleDeselectAgent = (agentId: string) => {
-    setSelectedAgents(selectedAgents.filter(id => id !== agentId));
+    setSelectedAgents(selectedAgents.filter((id) => id !== agentId));
   };
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       <Progress value={progress} className="w-full" />
-      
+
       <Card>
         <CardHeader>
           <CardTitle>{ONBOARDING_STEPS[currentStep].title}</CardTitle>
@@ -125,7 +136,9 @@ export function AgentOnboardingFlow({ onComplete }: AgentOnboardingFlowProps) {
               onClick={handleNext}
               disabled={currentStep === 1 && selectedAgents.length === 0}
             >
-              {currentStep === ONBOARDING_STEPS.length - 1 ? 'Get Started' : 'Next'}
+              {currentStep === ONBOARDING_STEPS.length - 1
+                ? "Get Started"
+                : "Next"}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
@@ -133,4 +146,4 @@ export function AgentOnboardingFlow({ onComplete }: AgentOnboardingFlowProps) {
       </Card>
     </div>
   );
-} 
+}

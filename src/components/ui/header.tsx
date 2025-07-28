@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "./button";
 import { Menu } from "lucide-react";
-import Link from 'next/link';
+import Link from "next/link";
+import * as React from "react";
+import { Button } from "./button";
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
   onMenuClick?: () => void;
@@ -14,7 +14,17 @@ export interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 const Header = React.forwardRef<HTMLElement, HeaderProps>(
-  ({ className, onMenuClick, walletAddress, onConnectWallet, onDisconnectWallet, ...props }, ref) => {
+  (
+    {
+      className,
+      onMenuClick,
+      walletAddress,
+      onConnectWallet,
+      onDisconnectWallet,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <header
         ref={ref}
@@ -39,7 +49,7 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
           {/* Logo/Brand */}
           <div className="mr-4 flex">
             <Link href="/" className="flex items-center space-x-2">
-              <span className="font-bold">Smart Block AI</span>
+              <span className="font-bold">Smart Block</span>
             </Link>
           </div>
 
@@ -59,7 +69,7 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
                   href="/agents"
                   className="text-sm font-medium transition-colors hover:text-primary"
                 >
-                  AI Agents
+                  Agents
                 </a>
               </li>
               <li>
@@ -89,10 +99,7 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
                 </Button>
               </div>
             ) : (
-              <Button
-                size="sm"
-                onClick={onConnectWallet}
-              >
+              <Button size="sm" onClick={onConnectWallet}>
                 Connect Wallet
               </Button>
             )}
@@ -104,4 +111,4 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
 );
 Header.displayName = "Header";
 
-export { Header }; 
+export { Header };

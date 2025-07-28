@@ -81,7 +81,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
           >
             <motion.div className={`${sidebarCollapsed ? "hidden" : "block"}`}>
               <h1 className="text-orange-500 font-bold text-4xl tracking-wider mb-2">
-                ◢ MEXMA AI ◣
+                MEXMA
               </h1>
               <p className="text-neutral-500 text-lg font-medium">
                 v2.1.7 CRYPTO INTEL

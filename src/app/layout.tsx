@@ -4,8 +4,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MEXMA AI - Crypto Intelligence",
-  description: "AI-powered blockchain analytics platform for market insights, portfolio management, and smart contract security analysis.",
+  title:
+    "MEXMA ($MXM) | Advanced Cryptocurrency Analytics & Portfolio Intelligence",
+  description:
+    "Blockchain analytics platform for market insights, portfolio management, and smart contract security analysis.",
 };
 
 export default function RootLayout({
@@ -29,7 +31,7 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem={false}
           disableTransitionOnChange
-          storageKey="bradley-ai-theme"
+          storageKey="bradley-theme"
         >
           <RootProvider>{children}</RootProvider>
         </ThemeProvider>

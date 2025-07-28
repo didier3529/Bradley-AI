@@ -49,7 +49,7 @@ export function SimpleLoading({ isVisible }: SimpleLoadingProps) {
           className="text-center"
         >
           <h1 className="text-4xl font-bold tracking-tight text-white">
-            BRADLEY AI
+            BRADLEY
           </h1>
           <p className="text-sm text-slate-400 mt-2">
             Advanced Cryptocurrency Intelligence Platform

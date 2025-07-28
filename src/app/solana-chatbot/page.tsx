@@ -28,7 +28,7 @@ export default function SolanaChatbotPage() {
       id: "1",
       type: "bot",
       content:
-        "Welcome to MEXMA AI Solana Assistant! I can help you with Solana ecosystem queries, DeFi protocols, token analysis, and trading insights. How can I assist you today?",
+        "Welcome to MEXMA Solana Assistant! I can help you with Solana ecosystem queries, DeFi protocols, token analysis, and trading insights. How can I assist you today?",
       timestamp: new Date(),
     },
   ]);

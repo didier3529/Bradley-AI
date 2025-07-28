@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { WalletConnection } from "@/components/wallet-connection"
-import { useAuth } from "@/lib/providers/auth-provider"
-import { LoadingScreen } from "@/components/ui/loading-screen"
-import { Logo } from "@/components/ui/logo"
+import { LoadingScreen } from "@/components/ui/loading-screen";
+import { Logo } from "@/components/ui/logo";
+import { WalletConnection } from "@/components/wallet-connection";
+import { useAuth } from "@/lib/providers/auth-provider";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function WalletConnectionPage() {
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
-  const { isAuthenticated } = useAuth()
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
 
   // If already authenticated, redirect to dashboard
   if (isAuthenticated) {
-    router.push("/dashboard")
-    return <LoadingScreen />
+    router.push("/dashboard");
+    return <LoadingScreen />;
   }
 
   if (isLoading) {
-    return <LoadingScreen />
+    return <LoadingScreen />;
   }
 
   return (
@@ -41,11 +41,11 @@ export function WalletConnectionPage() {
             <h1 className="text-3xl font-bold">
               Welcome to{" "}
               <span className="bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-                Bradley AI
+                Bradley
               </span>
             </h1>
             <p className="text-gray-300 text-lg">
-              Connect your wallet to access AI-powered blockchain analytics
+              Connect your wallet to access blockchain analytics
             </p>
           </div>
 
@@ -63,20 +63,26 @@ export function WalletConnectionPage() {
             <div className="grid grid-cols-1 gap-4 text-left">
               <div className="flex items-center space-x-3">
                 <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <span className="text-sm text-gray-300">Portfolio analytics</span>
+                <span className="text-sm text-gray-300">
+                  Portfolio analytics
+                </span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span className="text-sm text-gray-300">Real-time market data</span>
+                <span className="text-sm text-gray-300">
+                  Real-time market data
+                </span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
-                <span className="text-sm text-gray-300">AI-powered insights</span>
+                <span className="text-sm text-gray-300">
+                  AI-powered insights
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

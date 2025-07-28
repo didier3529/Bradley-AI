@@ -279,7 +279,7 @@ export const BradleyGemScanner: React.FC = () => {
           <button
             onClick={handleRefresh}
             disabled={loading}
-            className="p-2 rounded-lg bg-neutral-700 border border-neutral-600 hover:bg-neutral-600 transition-colors disabled:opacity-50"
+            className="p-2 rounded-lg bg-neutral-700 border border-neutral-600 hover:bg-neutral-800 transition-colors disabled:opacity-50"
             title="Refresh gem data"
           >
             <RefreshCw
@@ -480,7 +480,7 @@ export const BradleyGemScanner: React.FC = () => {
                         {" "}
                         {/* Maintained gap-3 for buttons */}
                         <button
-                          className="px-4 py-2 bg-gray-500/20 text-white text-xs font-mono rounded-lg border border-gray-500/30 hover:bg-gray-500/30 transition-colors"
+                          className="px-4 py-2 bg-neutral-700/20 text-neutral-400 text-xs font-mono rounded-lg border border-neutral-600/30 hover:bg-neutral-800/30 hover:text-white transition-colors"
                           onClick={() =>
                             window.open(
                               `https://dexscreener.com/solana/${gem.address}`,
@@ -494,7 +494,7 @@ export const BradleyGemScanner: React.FC = () => {
                           className={`px-4 py-2 text-xs font-mono rounded-lg border transition-all duration-200 ${
                             copiedAddress === gem.address
                               ? "bg-green-500/20 text-green-400 border-green-500/30"
-                              : "bg-gray-700/50 text-white border-gray-600 hover:bg-gray-700"
+                              : "bg-neutral-800/50 text-neutral-400 border-neutral-600 hover:bg-neutral-800 hover:text-white"
                           }`}
                           onClick={() => copyToClipboard(gem.address)}
                         >
